@@ -182,6 +182,10 @@
   .popask{color:var(--gold)}
   .witem{flex-direction:column;align-items:stretch;gap:5px}
   .witem .wa{text-align:left;white-space:normal;color:var(--mut)}
+  #expNote{display:block;margin-top:12px;text-align:left;font-size:13px;line-height:1.65;background:var(--surf);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;color:#cdc9bd}
+  #expNote .tag{display:inline-block;font-size:10px;font-weight:800;color:var(--ink);background:var(--gold);border-radius:4px;padding:2px 6px;margin-right:6px;letter-spacing:.3px;vertical-align:middle}
+  #expNote b{color:var(--tx)}
+  .nextb{display:block;width:100%;margin-top:12px;border:0;border-radius:12px;background:var(--gold);color:var(--ink);font-size:15px;font-weight:800;padding:14px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -248,6 +252,8 @@
     <div class="choices" id="choices"></div>
     <div id="mulRow" class="hidden"><input id="mulInput" inputmode="decimal" autocomplete="off" placeholder="정답 입력 후 Enter"></div>
     <div class="fb" id="fb"></div>
+    <div id="expNote" class="hidden"></div>
+    <button id="nextBtn" class="nextb hidden">다음 ▶</button>
     <button class="quit" id="quitBtn">그만두기</button>
   </div>
 
@@ -702,28 +708,28 @@ const HANJA=[
 ];
 function genHanja(){const it=HANJA[Math.floor(Math.random()*HANJA.length)];const opts=shuf([it.a].concat(it.d));return {q:it.s,ask:'밑줄 친 「'+it.w+'」에 해당하는 한자로 알맞은 것은?',opts:opts,correctIdx:opts.indexOf(it.a)};}
 const SPELL=[
- {q:'내 「( )」은 네가 잘되는 것뿐이다.',a:'바람',b:'바램'},
- {q:'오늘이 「( )」인지 달력을 봤다.',a:'며칠',b:'몇 일'},
- {q:'문제가 「( )」 풀려 버렸다.',a:'금세',b:'금새'},
- {q:'「( )」 기분이 좋은 날이다.',a:'왠지',b:'웬지'},
- {q:'「( )」하면 참석하려 한다.',a:'웬만',b:'왠만'},
- {q:'정말 「( )」에 다시 만났다.',a:'오랜만',b:'오랫만'},
- {q:'그 말에 마음이 「( )」.',a:'설렜다',b:'설레였다'},
- {q:'이 방법이 더 「( )」.',a:'낫다',b:'낳다'},
- {q:'팀장이 서류를 「( )」했다.',a:'결재',b:'결제'},
- {q:'카드로 물건값을 「( )」했다.',a:'결제',b:'결재'},
- {q:'봉투에 우표를 「( )」.',a:'붙였다',b:'부쳤다'},
- {q:'고향으로 소포를 「( )」.',a:'부쳤다',b:'붙였다'},
- {q:'선생님이 한글을 「( )」.',a:'가르치다',b:'가리키다'},
- {q:'손으로 북쪽을 「( )」.',a:'가리키다',b:'가르치다'},
- {q:'그렇게 하면 안 「( )」.',a:'돼',b:'되'},
- {q:'배가 불러 밥을 「( )」 먹었다.',a:'안',b:'않'},
- {q:'사과를 껍질「( )」 먹었다.',a:'째',b:'채'},
- {q:'책상 위에 놓여 「( )」.',a:'있다',b:'잇다'},
- {q:'학생「( )」 최선을 다했다.',a:'으로서',b:'으로써'},
- {q:'대화「( )」 오해를 풀었다.',a:'로써',b:'로서'}
+ {q:'내 「( )」은 네가 잘되는 것뿐이다.',a:'바람',b:'바램',e:'소망의 뜻은 <b>바람</b>(바라다→바람). <b>바램</b>은 색이 변하는 「바래다」에서 온 잘못된 표기예요.'},
+ {q:'오늘이 「( )」인지 달력을 봤다.',a:'며칠',b:'몇 일',e:'날짜는 언제나 <b>며칠</b>로 적어요. 「몇 일」은 표준 표기가 아니며 국립국어원도 <b>며칠</b>만 인정합니다.'},
+ {q:'문제가 「( )」 풀려 버렸다.',a:'금세',b:'금새',e:'<b>금세</b>는 「금시(今時)에」가 줄어든 말이라 맞아요. 「금새」는 물건 값을 뜻하는 다른 단어입니다.'},
+ {q:'「( )」 기분이 좋은 날이다.',a:'왠지',b:'웬지',e:'「왜인지」가 줄어 <b>왠지</b>. 「웬」은 <b>웬일·웬만</b>처럼 「어찌 된/어지간한」 뜻일 때만 써요.'},
+ {q:'「( )」하면 참석하려 한다.',a:'웬만',b:'왠만',e:'표준어는 <b>웬만하다</b>. 「왠만」은 틀린 표기예요(어지간하다는 뜻의 「웬만」).'},
+ {q:'정말 「( )」에 다시 만났다.',a:'오랜만',b:'오랫만',e:'「오래간만」의 준말이라 <b>오랜만</b>. 단, 「오랫동안」은 <b>오랫</b>으로 적으니 구별하세요.'},
+ {q:'그 말에 마음이 「( )」.',a:'설렜다',b:'설레였다',e:'기본형이 <b>설레다</b>라 과거형은 <b>설렜다</b>. 「설레이다」는 표준어가 아니에요.'},
+ {q:'이 방법이 더 「( )」.',a:'낫다',b:'낳다',e:'상태가 좋아지거나 더 나을 때는 <b>낫다</b>. <b>낳다</b>는 아이·새끼를 출산할 때만 씁니다.'},
+ {q:'팀장이 서류를 「( )」했다.',a:'결재',b:'결제',e:'상관이 안건을 허가하는 것은 <b>결재(決裁)</b>. 대금을 치르는 <b>결제(決濟)</b>와 구별해요.'},
+ {q:'카드로 물건값을 「( )」했다.',a:'결제',b:'결재',e:'돈을 치르는 것은 <b>결제(決濟)</b>. 서류를 승인하는 <b>결재(決裁)</b>와 헷갈리지 마세요.'},
+ {q:'봉투에 우표를 「( )」.',a:'붙였다',b:'부쳤다',e:'달라붙게 하는 것은 <b>붙이다</b>(우표를 붙이다). 보내는 「부치다」와 달라요.'},
+ {q:'고향으로 소포를 「( )」.',a:'부쳤다',b:'붙였다',e:'보내는 것은 <b>부치다</b>(소포를 부치다). 달라붙게 하는 「붙이다」와 구별합니다.'},
+ {q:'선생님이 한글을 「( )」.',a:'가르치다',b:'가리키다',e:'지식을 알려 주는 것은 <b>가르치다</b>. 방향·대상을 집는 「가리키다」와 달라요.'},
+ {q:'손으로 북쪽을 「( )」.',a:'가리키다',b:'가르치다',e:'방향을 집어 보이는 것은 <b>가리키다</b>. 지식을 전하는 「가르치다」와 구별합니다.'},
+ {q:'그렇게 하면 안 「( )」.',a:'돼',b:'되',e:'<b>돼</b>는 「되어」의 준말. 문장 끝 「안 돼」(=안 되어)가 맞아요. 헷갈리면 「되어」로 풀어 보세요.'},
+ {q:'배가 불러 밥을 「( )」 먹었다.',a:'안',b:'않',e:'부사 「아니」는 <b>안</b>(안 먹었다). <b>않</b>은 「아니하-」로 「-지 않다」 꼴에 써요.'},
+ {q:'사과를 껍질「( )」 먹었다.',a:'째',b:'채',e:'그대로 포함하면 <b>-째</b>(껍질째). 어떤 상태 그대로면 <b>채</b>(문을 연 채)로 달라요.'},
+ {q:'책상 위에 놓여 「( )」.',a:'있다',b:'잇다',e:'존재·상태는 <b>있다</b>. <b>잇다</b>는 끊긴 것을 연결한다는 다른 말이에요.'},
+ {q:'학생「( )」 최선을 다했다.',a:'으로서',b:'으로써',e:'자격·신분은 <b>-로서</b>(학생으로서). 수단·도구의 「-로써」와 구별합니다.'},
+ {q:'대화「( )」 오해를 풀었다.',a:'로써',b:'로서',e:'수단·방법은 <b>-로써</b>(대화로써). 자격의 「-로서」와 달라요.'}
 ];
-function genSpell(){const it=SPELL[Math.floor(Math.random()*SPELL.length)];const opts=shuf([it.a,it.b]);return {q:it.q,ask:'괄호 안에 맞춤법상 알맞은 것은?',opts:opts,correctIdx:opts.indexOf(it.a)};}
+function genSpell(){const it=SPELL[Math.floor(Math.random()*SPELL.length)];const opts=shuf([it.a,it.b]);return {q:it.q,ask:'괄호 안에 맞춤법상 알맞은 것은?',opts:opts,correctIdx:opts.indexOf(it.a),exp:it.e};}
 const COMM_GENS={proverb:genProverb,idiom:genIdiom,hanja:genHanja,spell:genSpell};
 let commCursor=0;
 function updateComm(){$('#commList').querySelectorAll('.mode').forEach((x,i)=>x.classList.toggle('on',i===commCursor));}
@@ -762,7 +768,7 @@ function load(){
   if(c.html){$('#qText').innerHTML=c.html;$('#qText').classList.add('hastable');}
   else{$('#qText').textContent=c.q;$('#qText').classList.remove('hastable');}
   $('#qAsk').classList.toggle('big',S.mode==='real');
-  $('#qAsk').textContent=c.ask;$('#fb').textContent='';$('#fb').className='fb';
+  $('#qAsk').textContent=c.ask;$('#fb').textContent='';$('#fb').className='fb';$('#expNote').classList.add('hidden');$('#expNote').innerHTML='';$('#nextBtn').classList.add('hidden');S.awaitNext=false;
   if(c.typed){
     $('#choices').classList.add('hidden');$('#mulRow').classList.remove('hidden');
     const inp=$('#mulInput');inp.value='';inp.disabled=false;inp.focus();
@@ -857,6 +863,7 @@ function moveGrid(dr,dc){
   updateCursor();
 }
 function pick(i){if(!S||!S.running||S.answered)return;reveal(i);}
+function nextQ(){if(!(S&&S.running)||$('#quiz').classList.contains('hidden'))return;if((S.ok+S.ng)>=S.count)finish();else load();}
 function reveal(picked){
   S.answered=true;cancelAnimationFrame(S.raf);
   const c=S.current,rt=(performance.now()-S.qStart)/1000;
@@ -873,7 +880,7 @@ function reveal(picked){
       else if(i===picked)b.classList.add('wrong');else b.classList.add('dim');});
     yourT=timeout?'시간초과':c.opts[picked];ansT=c.opts[c.correctIdx];
   }
-  S.log.push({q:c.q,your:yourT,ans:ansT,ok,pop:(c.html?c.html:`<div class="popq">${c.q}${c.typed?' = ?':''}</div>`)+`<div class="popask">${c.typed?('정답 '+ansT):c.ask}</div>`});
+  S.log.push({q:c.q,your:yourT,ans:ansT,ok,pop:(c.html?c.html:`<div class="popq">${c.q}${c.typed?' = ?':''}</div>`)+`<div class="popask">${c.typed?('정답 '+ansT):c.ask}</div>`+(c.exp?`<div style="margin-top:8px;font-size:12px;line-height:1.55;color:#cdc9bd;text-align:left">${c.exp}</div>`:'')});
   if(ok){S.ok++;S.streak++;S.best=Math.max(S.best,S.streak);
     $('#fb').textContent=`정답 (${rt.toFixed(1)}s)`;$('#fb').className='fb ok';}
   else{S.ng++;S.streak=0;
@@ -887,8 +894,8 @@ function reveal(picked){
     setTimeout(()=>{if(!(S&&S.running)||$('#quiz').classList.contains('hidden'))return;
       if(S.ok>=S.count)finish();else load();},110);return;
   }
-  setTimeout(()=>{if(!(S&&S.running)||$('#quiz').classList.contains('hidden'))return;
-    if((S.ok+S.ng)>=S.count)finish();else load();},ok?450:1150);
+  if(c.exp){$('#expNote').innerHTML=`<span class="tag">📖 국립국어원</span>${c.exp}`;$('#expNote').classList.remove('hidden');$('#nextBtn').classList.remove('hidden');S.awaitNext=true;}
+  else setTimeout(()=>nextQ(),ok?450:1150);
 }
 function finish(){
   S.running=false;cancelAnimationFrame(S.raf);
@@ -967,6 +974,7 @@ $('#fOkBtn').onclick=()=>gradeCard(true);
 $('#fNgBtn').onclick=()=>gradeCard(false);
 $('#fQuitBtn').onclick=()=>show('setup');
 $('#domComm').onclick=()=>show('comm');
+$('#nextBtn').onclick=()=>{if(S&&S.awaitNext){S.awaitNext=false;nextQ();}};
 $('#toLanding2').onclick=()=>show('landing');
 $('#commList').addEventListener('click',e=>{const b=e.target.closest('.mode');if(!b)return;const idx=[...$('#commList').children].indexOf(b);if(idx>=0){commCursor=idx;updateComm();}start(b.dataset.c);});
 $('#fAgainBtn').onclick=()=>startFlash(lastFlashDiff);
@@ -1015,7 +1023,7 @@ document.addEventListener('keydown',e=>{
   if(!$('#quiz').classList.contains('hidden')&&S&&S.running){
     if(e.key==='Escape'){e.preventDefault();if((S.ok+S.ng)>0){finish();}else{S.running=false;cancelAnimationFrame(S.raf);show(isComm(S.mode)?'comm':'setup');}return;}
     if(S.mode==='mul')return;
-    if(S.answered)return;
+    if(S.answered){if(S.awaitNext&&(e.key===' '||e.code==='Space'||e.key==='Enter'||e.key==='ArrowRight')){e.preventDefault();S.awaitNext=false;nextQ();}return;}
     if(e.key==='ArrowRight'){e.preventDefault();moveGrid(0,1);}
     else if(e.key==='ArrowLeft'){e.preventDefault();moveGrid(0,-1);}
     else if(e.key==='ArrowDown'){e.preventDefault();moveGrid(1,0);}
