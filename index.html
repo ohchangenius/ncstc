@@ -237,6 +237,8 @@
       <button class="mode" data-c="idiom">사자성어<span class="sm">한자성어 → 뜻</span></button>
       <button class="mode" data-c="hanja">한자어 표기<span class="sm">밑줄 단어의 바른 한자</span></button>
       <button class="mode" data-c="spell">맞춤법<span class="sm">바른 표기 고르기</span></button>
+      <button class="mode" data-c="syn">어휘 대체<span class="sm">유의어로 바꿔 쓰기</span></button>
+      <button class="mode" data-c="idiomfit">혼동 성어<span class="sm">뜻 → 알맞은 성어</span></button>
     </div>
   </div>
 
@@ -642,8 +644,8 @@ function genPayroll(diff){
 }
 const REAL_GENS=[genTable,genTable,genTable,genPayroll,genPayroll,genMulCmp,genRank,genSum,genConc,genConc,genWork,genWork,genSpeed,genSpeed,genProfit,genProfit,genCombo,genAvg,genRatio];
 /* ===== 의사소통 능력 (원본 데이터셋 · 무작위 출제) ===== */
-const COMM_MODES=['proverb','idiom','hanja','spell'];
-const COMM_NAME={proverb:'속담',idiom:'사자성어',hanja:'한자어 표기',spell:'맞춤법'};
+const COMM_MODES=['proverb','idiom','hanja','spell','syn','idiomfit'];
+const COMM_NAME={proverb:'속담',idiom:'사자성어',hanja:'한자어 표기',spell:'맞춤법',syn:'어휘 대체',idiomfit:'혼동 성어'};
 const COMM_LIMIT={'하':40,'중':30,'상':22};
 const isComm=m=>COMM_MODES.includes(m);
 function shuf(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
@@ -795,7 +797,47 @@ const SPELL=[
  {q:'명단을 「( )」 확인했다.',a:'일일이',b:'일일히',e:'하나하나는 <b>일일이</b>(「-이」).'}
 ];
 function genSpell(){const it=SPELL[Math.floor(Math.random()*SPELL.length)];const opts=shuf([it.a,it.b]);return {q:it.q,ask:'괄호 안에 맞춤법상 알맞은 것은?',opts:opts,correctIdx:opts.indexOf(it.a),exp:it.e};}
-const COMM_GENS={proverb:genProverb,idiom:genIdiom,hanja:genHanja,spell:genSpell};
+const SYN=[
+ {w:'할애하다',s:'그는 연구에 많은 시간을 「할애했다」.',a:'들였다',d:['아꼈다','허비했다','빼앗았다'],x:'할애하다=시간·비용을 내어 쓰다 → 「들이다」. 아끼다·허비하다는 반대 뉘앙스.'},
+ {w:'가공할',s:'적의 「가공할」 화력 앞에 물러섰다.',a:'놀랄 만한',d:['하찮은','가공된','상상의'],x:'가공(可恐)할=두려울 만큼 놀라운. 「가공(加工)된」과 동음이라 헷갈림.'},
+ {w:'비범하다',s:'그는 「비범한」 재능을 지녔다.',a:'뛰어나다',d:['평범하다','기이하다','성실하다'],x:'비범=남달리 뛰어남. 평범은 반대.'},
+ {w:'함축적',s:'시는 「함축적」 표현을 즐겨 쓴다.',a:'암시적',d:['이지적','직설적','논리적'],x:'함축적=속뜻을 담아 넌지시 → 암시적. 이지적(이성적)과 다름.'},
+ {w:'경신하다',s:'그는 세계 기록을 「경신했다」.',a:'갈아치웠다',d:['유지했다','되풀이했다','확인했다'],x:'경신=이미 있던 기록을 깨고 새로 세움 → 갈아치우다.'},
+ {w:'묵과하다',s:'잘못을 「묵과할」 수 없다.',a:'눈감아 줄',d:['처벌할','기록할','공표할'],x:'묵과=말없이 넘겨 봐줌 → 눈감아 주다.'},
+ {w:'와해되다',s:'조직이 「와해되었다」.',a:'무너졌다',d:['결성됐다','확장됐다','정비됐다'],x:'와해=조직·계획이 무너져 흩어짐 → 무너지다.'},
+ {w:'상충하다',s:'두 규정이 서로 「상충한다」.',a:'충돌한다',d:['일치한다','보완한다','연계된다'],x:'상충=서로 어긋나 맞부딪침 → 충돌.'},
+ {w:'답습하다',s:'구태를 그대로 「답습했다」.',a:'따랐다',d:['혁신했다','비판했다','창안했다'],x:'답습=예전 것을 그대로 따라 함 → 따르다.'},
+ {w:'표방하다',s:'그 단체는 중립을 「표방했다」.',a:'내세웠다',d:['감췄다','포기했다','의심했다'],x:'표방=주의·주장을 내세워 드러냄 → 내세우다.'},
+ {w:'전가하다',s:'책임을 남에게 「전가했다」.',a:'떠넘겼다',d:['짊어졌다','나눴다','인정했다'],x:'전가=허물·책임을 남에게 넘김 → 떠넘기다.'},
+ {w:'봉착하다',s:'난관에 「봉착했다」.',a:'부딪혔다',d:['벗어났다','대비했다','통과했다'],x:'봉착=어떤 상황에 맞닥뜨림 → 부딪히다.'},
+ {w:'상이하다',s:'두 제품의 성능이 「상이하다」.',a:'서로 다르다',d:['비슷하다','우수하다','동일하다'],x:'상이=서로 다름. 동일은 반대.'},
+ {w:'간과하다',s:'중요한 사실을 「간과했다」.',a:'놓쳤다',d:['강조했다','기록했다','과장했다'],x:'간과=대충 보아 넘김 → 놓치다.'},
+ {w:'유예하다',s:'집행을 「유예했다」.',a:'미뤘다',d:['앞당겼다','취소했다','강행했다'],x:'유예=일을 뒤로 미룸 → 미루다.'},
+ {w:'지양하다',s:'획일적 방식을 「지양한다」.',a:'피한다',d:['추구한다','반복한다','권장한다'],x:'지양=하지 않으려 함 → 피하다. 지향(추구)과 반대!'},
+ {w:'지향하다',s:'평화를 「지향한다」.',a:'추구한다',d:['멀리한다','포기한다','금지한다'],x:'지향=목표로 나아감 → 추구하다. 지양(피함)과 반대!'},
+ {w:'천명하다',s:'개혁 의지를 「천명했다」.',a:'분명히 밝혔다',d:['숨겼다','철회했다','의심했다'],x:'천명=분명히 드러내 밝힘.'},
+ {w:'상응하다',s:'노력에 「상응하는」 보상을 받았다.',a:'걸맞은',d:['모자란','지나친','무관한'],x:'상응=서로 걸맞게 어울림 → 걸맞다.'},
+ {w:'미연에',s:'사고를 「미연에」 방지하다.',a:'사전에',d:['사후에','우연히','즉시'],x:'미연=아직 일이 생기기 전 → 사전에.'}
+];
+function genSyn(){const it=SYN[Math.floor(Math.random()*SYN.length)];const opts=shuf([it.a].concat(it.d));return {q:it.s,ask:'밑줄 친 「'+it.w+'」와 바꿔 쓸 수 있는 것은?',opts:opts,correctIdx:opts.indexOf(it.a),exp:it.x};}
+const IDIOMFIT=[
+ {def:'이전에 아무도 하지 못한 일을 처음으로 해냄',a:'파천황(破天荒)',d:['불세출(不世出)','미증유(未曾有)','전대미문(前代未聞)'],x:'셋 다 「전에 없음」이지만 파천황은 「처음으로 개척해 냄」. 불세출은 뛰어난 「인물」에만 씀.'},
+ {def:'좀처럼 세상에 나타나지 않을 만큼 뛰어난 인물',a:'불세출(不世出)',d:['파천황(破天荒)','전무후무(前無後無)','미증유(未曾有)'],x:'불세출=뛰어난 「사람」. 나머지는 사건·일에 씀.'},
+ {def:'지금까지 한 번도 있어 본 적이 없는 일',a:'미증유(未曾有)',d:['불세출(不世出)','일취월장(日就月將)','파죽지세(破竹之勢)'],x:'미증유=여태 없던 일.'},
+ {def:'사방이 적으로 둘러싸여 고립되어 도움받을 데 없는 처지',a:'사면초가(四面楚歌)',d:['풍전등화(風前燈火)','설상가상(雪上加霜)','감언이설(甘言利說)'],x:'사면초가=고립무원. 풍전등화=위태로움(다른 결).'},
+ {def:'바람 앞의 등불처럼 매우 위태로운 상태',a:'풍전등화(風前燈火)',d:['사면초가(四面楚歌)','문전성시(門前成市)','점입가경(漸入佳境)'],x:'풍전등화=매우 위태로움.'},
+ {def:'어려운 일이나 불행이 잇따라 겹쳐 일어남',a:'설상가상(雪上加霜)',d:['금상첨화(錦上添花)','사면초가(四面楚歌)','자업자득(自業自得)'],x:'설상가상=엎친 데 덮침. 금상첨화는 반대.'},
+ {def:'좋은 일 위에 또 좋은 일이 더해짐',a:'금상첨화(錦上添花)',d:['설상가상(雪上加霜)','다다익선(多多益善)','과유불급(過猶不及)'],x:'금상첨화=비단에 꽃을 더함. 설상가상은 반대.'},
+ {def:'학문·실력이 나날이 발전해 나아감',a:'일취월장(日就月將)',d:['대기만성(大器晩成)','괄목상대(刮目相對)','청출어람(靑出於藍)'],x:'일취월장=나날이 발전. 괄목상대=남이 놀라 다시 봄, 청출어람=제자>스승.'},
+ {def:'큰 인물은 오랜 노력 끝에 늦게 이루어짐',a:'대기만성(大器晩成)',d:['일취월장(日就月將)','청출어람(靑出於藍)','형설지공(螢雪之功)'],x:'대기만성=큰 그릇은 늦게 이룸.'},
+ {def:'제자나 후배가 스승·선배보다 더 뛰어남',a:'청출어람(靑出於藍)',d:['대기만성(大器晩成)','괄목상대(刮目相對)','온고지신(溫故知新)'],x:'청출어람=쪽에서 나온 푸름이 쪽보다 더 푸름.'},
+ {def:'미리 준비가 되어 있으면 근심이 없음',a:'유비무환(有備無患)',d:['망양보뢰(亡羊補牢)','우유부단(優柔不斷)','설상가상(雪上加霜)'],x:'유비무환=대비하면 걱정 없음. 망양보뢰=소 잃고 외양간(사후).'},
+ {def:'작은 것을 탐하다가 큰 것을 잃음',a:'소탐대실(小貪大失)',d:['견물생심(見物生心)','다다익선(多多益善)','새옹지마(塞翁之馬)'],x:'소탐대실=작은 이익을 탐하다 큰 손해.'},
+ {def:'물건을 보면 갖고 싶은 욕심이 생김',a:'견물생심(見物生心)',d:['소탐대실(小貪大失)','자업자득(自業自得)','과유불급(過猶不及)'],x:'견물생심=보면 욕심이 생김.'},
+ {def:'겉과 속이 서로 달라 마음이 음흉함',a:'표리부동(表裏不同)',d:['일편단심(一片丹心)','권선징악(勸善懲惡)','명약관화(明若觀火)'],x:'표리부동=겉 다르고 속 다름. 일편단심은 반대(한결같음).'}
+];
+function genIdiomFit(){const it=IDIOMFIT[Math.floor(Math.random()*IDIOMFIT.length)];const opts=shuf([it.a].concat(it.d));return {q:'「'+it.def+'」',ask:'이 뜻에 해당하는 한자성어는?',opts:opts,correctIdx:opts.indexOf(it.a),exp:'<b>'+it.a+'</b> — '+it.x};}
+const COMM_GENS={proverb:genProverb,idiom:genIdiom,hanja:genHanja,spell:genSpell,syn:genSyn,idiomfit:genIdiomFit};
 let commCursor=0;
 function updateComm(){$('#commList').querySelectorAll('.mode').forEach((x,i)=>x.classList.toggle('on',i===commCursor));}
 function moveComm(d){commCursor=(commCursor+d+COMM_MODES.length)%COMM_MODES.length;updateComm();}
@@ -1025,7 +1067,7 @@ function reveal(picked){
     setTimeout(()=>{if(!(S&&S.running)||$('#quiz').classList.contains('hidden'))return;
       if(S.ok>=S.count)finish();else load();},110);return;
   }
-  if(c.exp){const LBL={spell:'국립국어원',hanja:'한자 풀이',idiom:'뜻풀이',proverb:'쓰임',fallacy:'논리적 오류',contra:'대우 규칙',syllog:'삼단논법'};const _l=LBL[S.mode]||'해설';$('#expNote').innerHTML=`<span class="tag">📖 ${_l}</span>${c.exp}`;$('#expNote').classList.remove('hidden');$('#nextBtn').classList.remove('hidden');S.awaitNext=true;}
+  if(c.exp){const LBL={spell:'국립국어원',hanja:'한자 풀이',idiom:'뜻풀이',proverb:'쓰임',syn:'유의어',idiomfit:'성어 구별',fallacy:'논리적 오류',contra:'대우 규칙',syllog:'삼단논법'};const _l=LBL[S.mode]||'해설';$('#expNote').innerHTML=`<span class="tag">📖 ${_l}</span>${c.exp}`;$('#expNote').classList.remove('hidden');$('#nextBtn').classList.remove('hidden');S.awaitNext=true;}
   else setTimeout(()=>nextQ(),ok?450:1150);
 }
 function finish(){
