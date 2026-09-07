@@ -196,7 +196,7 @@
     <div class="ncs-big">NCS</div>
     <div class="tc">TRAINING CAMP</div>
     <div class="domains">
-      <button class="domain on" id="domMath">수리영역 연습<span class="sm">어림·자료해석·곱셈</span></button>
+      <button class="domain on" id="domMath">수리영역 연습<span class="sm">자료해석·응용수리·곱하기</span></button>
       <button class="domain" id="domComm">의사소통 능력<span class="sm">속담·사자성어·한자어·맞춤법</span></button>
       <button class="domain" id="domPS">문제해결 능력<span class="sm">논리적 오류·명제·삼단논법</span></button>
     </div>
@@ -208,11 +208,16 @@
     <div id="modeSel">
       <div class="label">모드 선택</div>
       <div class="modelist" id="modeList">
-        <button class="mode on" data-m="est">기초 탄탄<span class="sm">어림·계산 근력</span></button>
-        <button class="mode" data-m="real">실전 문제<span class="sm">자료해석·계산·응용수리</span></button>
+        <button class="mode on" data-m="real">실전 감각<span class="sm">전 유형 랜덤 · 실전처럼</span></button>
+        <button class="mode" data-m="data">자료해석·계산<span class="sm">표·비중·증가율·비교</span></button>
+        <button class="mode" data-m="conc">농도 (소금물)<span class="sm">소금물·농도 계산</span></button>
+        <button class="mode" data-m="speed">거리·속력·시간<span class="sm">거속시</span></button>
+        <button class="mode" data-m="work">일의 양 (일률)<span class="sm">함께 하면 며칠</span></button>
+        <button class="mode" data-m="combo">경우의 수·확률<span class="sm">순열·조합·확률</span></button>
+        <button class="mode" data-m="profit">원가·이익<span class="sm">정가·할인·이익</span></button>
+        <button class="mode" data-m="avg">평균<span class="sm">평균·총점</span></button>
+        <button class="mode" data-m="ratio">비율·비례<span class="sm">비·비례배분</span></button>
         <button class="mode" data-m="mul">곱하기 마스터<span class="sm">직접 입력 · 곱셈 감각</span></button>
-        <button class="mode" data-m="flash">분수 플래시카드<span class="sm">소수 변환 암기</span></button>
-        <button class="mode" data-m="tips">꿀팁 보기<span class="sm">어림 기술 참고</span></button>
       </div>
     </div>
     <div id="diffSel" class="hidden">
@@ -461,7 +466,7 @@ const GENS=[growthEst,growthEst,growthEst,shareEst,shareEst,shareEst,timesEst,ti
 const TABLE_LIMIT={'하':60,'중':40,'상':28};
 const CALC_LIMIT={'하':35,'중':26,'상':20};
 const REAL_LIMIT={'하':60,'중':45,'상':35};
-function curLimit(){const L=isPS(S.mode)?PS_LIMIT:isComm(S.mode)?COMM_LIMIT:S.mode==='real'?REAL_LIMIT:S.mode==='table'?TABLE_LIMIT:S.mode==='calc'?CALC_LIMIT:LIMIT;return L[S.diff]*1000;}
+function curLimit(){const L=isPS(S.mode)?PS_LIMIT:isComm(S.mode)?COMM_LIMIT:(S.mode==='real'||isMath(S.mode))?REAL_LIMIT:S.mode==='table'?TABLE_LIMIT:S.mode==='calc'?CALC_LIMIT:LIMIT;return L[S.diff]*1000;}
 const T_THEMES=[
   {title:'인천공항 노선별 국제선 여객',unit:'만 명',noun:'여객',rows:['미주','유럽','중국','동남아','일본']},
   {title:'인천공항 유형별 항공화물',unit:'천 톤',noun:'물동량',rows:['수출','수입','환적','우편']},
@@ -915,8 +920,10 @@ $('#diffOpts').addEventListener('click',e=>{const b=e.target.closest('.opt');if(
   $('#diffOpts').querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');curDiff=b.dataset.v;});
 function setDiff(i){const btns=$('#diffOpts').querySelectorAll('.opt');btns.forEach(x=>x.classList.remove('on'));btns[i].classList.add('on');curDiff=btns[i].dataset.v;}
 function show(id){['landing','setup','comm','ps','quiz','result','flash','fresult'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));if(id==='setup'){$('#modeSel').classList.remove('hidden');$('#diffSel').classList.add('hidden');updateModeCursor();}if(id==='landing'){landCursor=0;updateLand();}if(id==='comm'){commCursor=0;updateComm();}if(id==='ps'){psCursor=0;updatePS();}}
-let pendingMode='est',modeCursor=0;
-const MODE_LIST=['est','real','mul','flash','tips'],MODE_NAME={est:'기초 탄탄',real:'실전 문제',mul:'곱하기 마스터',flash:'분수 플래시카드'};
+let pendingMode='real',modeCursor=0;
+const MODE_LIST=['real','data','conc','speed','work','combo','profit','avg','ratio','mul'],MODE_NAME={real:'실전 감각',data:'자료해석·계산',conc:'농도(소금물)',speed:'거리·속력·시간',work:'일의 양',combo:'경우의 수·확률',profit:'원가·이익',avg:'평균',ratio:'비율·비례',mul:'곱하기 마스터'};
+const MATH_GENS={conc:genConc,speed:genSpeed,work:genWork,combo:genCombo,profit:genProfit,avg:genAvg,ratio:genRatio,data:d=>choice([genTable,genPayroll,genMulCmp,genRank,genSum])(d)};
+function isMath(m){return Object.prototype.hasOwnProperty.call(MATH_GENS,m);}
 function updateModeCursor(){$('#modeList').querySelectorAll('.mode').forEach((x,i)=>x.classList.toggle('on',i===modeCursor));}
 function moveMode(d){modeCursor=(modeCursor+d+MODE_LIST.length)%MODE_LIST.length;updateModeCursor();}
 let landCursor=0;
@@ -936,11 +943,11 @@ function start(mode){
 }
 function load(){
   S.answered=false;S.over=false;S.timedOut=false;S.cursor=0;
-  const c=isText(S.mode)?TEXT_GENS[S.mode]():S.mode==='mul'?genMulMaster(S.diff):S.mode==='real'?REAL_GENS[Math.floor(Math.random()*REAL_GENS.length)](S.diff):GENS[Math.floor(Math.random()*GENS.length)](S.diff);
+  const c=isText(S.mode)?TEXT_GENS[S.mode]():S.mode==='mul'?genMulMaster(S.diff):isMath(S.mode)?MATH_GENS[S.mode](S.diff):S.mode==='real'?REAL_GENS[Math.floor(Math.random()*REAL_GENS.length)](S.diff):GENS[Math.floor(Math.random()*GENS.length)](S.diff);
   S.current=c;
   if(c.html){$('#qText').innerHTML=c.html;$('#qText').classList.add('hastable');}
   else{$('#qText').textContent=c.q;$('#qText').classList.remove('hastable');}
-  $('#qAsk').classList.toggle('big',S.mode==='real');
+  $('#qAsk').classList.toggle('big',S.mode==='real'||isMath(S.mode));
   $('#qAsk').textContent=c.ask;$('#fb').textContent='';$('#fb').className='fb';$('#expNote').classList.add('hidden');$('#expNote').innerHTML='';$('#nextBtn').classList.add('hidden');S.awaitNext=false;
   if(c.typed){
     $('#choices').classList.add('hidden');$('#mulRow').classList.remove('hidden');
@@ -1074,7 +1081,7 @@ function finish(){
   S.running=false;cancelAnimationFrame(S.raf);
   const done=S.ok+S.ng,acc=done?Math.round(S.ok/done*100):0;
   const avg=S.times.length?S.times.reduce((a,b)=>a+b,0)/S.times.length:0;
-  $('#rTitle').textContent=S.sprint?(S.dead?`⛔ 탈락 · ${S.ok}문제 생존`:`🏁 완주 성공! 100문제`):isPS(S.mode)?('문제해결 · '+PS_NAME[S.mode]):isComm(S.mode)?('의사소통 · '+COMM_NAME[S.mode]):`${S.mode==='real'?'실전 문제':S.mode==='mul'?'곱하기 마스터':'기초 탄탄'} · ${S.diff}`;
+  $('#rTitle').textContent=S.sprint?(S.dead?`⛔ 탈락 · ${S.ok}문제 생존`:`🏁 완주 성공! 100문제`):isPS(S.mode)?('문제해결 · '+PS_NAME[S.mode]):isComm(S.mode)?('의사소통 · '+COMM_NAME[S.mode]):`${MODE_NAME[S.mode]||'수리'} · ${S.diff}`;
   $('#rAcc').textContent=acc+'%';$('#rAvg').textContent=avg.toFixed(1)+'s';
   $('#rTot').textContent=done;$('#rStreak').textContent=S.best;
   const wl=$('#wList');wl.innerHTML='';
@@ -1139,7 +1146,7 @@ $('#domMath').onclick=()=>show('setup');
 $('#toLanding').onclick=()=>show('landing');
 $('#tipsClose').onclick=closeTips;
 $('#quitBtn').onclick=()=>{if(S){S.running=false;cancelAnimationFrame(S.raf);}if(S&&(S.ok+S.ng)>0)finish();else show(domScreen(S&&S.mode));};
-$('#againBtn').onclick=()=>start(S&&S.mode?S.mode:'est');
+$('#againBtn').onclick=()=>start(S&&S.mode?S.mode:'real');
 $('#homeBtn').onclick=()=>show(domScreen(S&&S.mode));
 $('#resumeBtn').onclick=resumeGame;
 $('#phomeBtn').onclick=quitToSetup;
@@ -1215,7 +1222,7 @@ document.addEventListener('keydown',e=>{
     else{const n=parseInt(e.key);if(n>=1&&n<=S.current.opts.length){S.cursor=n-1;updateCursor();}}
     return;
   }
-  if(!$('#result').classList.contains('hidden')&&(e.key===' '||e.code==='Space')){e.preventDefault();start(S&&S.mode?S.mode:'est');}
+  if(!$('#result').classList.contains('hidden')&&(e.key===' '||e.code==='Space')){e.preventDefault();start(S&&S.mode?S.mode:'real');}
 });
 </script>
 </body>
