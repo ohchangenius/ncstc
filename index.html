@@ -199,6 +199,9 @@
       <button class="domain on" id="domMath">수리영역 연습<span class="sm">자료해석·응용수리·곱하기</span></button>
       <button class="domain" id="domComm">의사소통 능력<span class="sm">속담·사자성어·한자어·맞춤법</span></button>
       <button class="domain" id="domPS">문제해결 능력<span class="sm">논리적 오류·명제·삼단논법</span></button>
+      <button class="domain" id="domInfo">정보 능력<span class="sm">진법 변환·엑셀 함수</span></button>
+      <button class="domain" id="domRes">자원관리 능력<span class="sm">환율·최소 비용</span></button>
+      <button class="domain" id="domOrg">조직이해 능력<span class="sm">경영·조직·국제 매너</span></button>
     </div>
   </div>
 
@@ -208,8 +211,16 @@
     <div id="modeSel">
       <div class="label">모드 선택</div>
       <div class="modelist" id="modeList">
-        <button class="mode on" data-m="real">실전 감각<span class="sm">전 유형 랜덤 · 실전처럼</span></button>
-        <button class="mode" data-m="data">자료해석·계산<span class="sm">표·비중·증가율·비교</span></button>
+        <button class="mode on" data-m="mul">기초 탄탄<span class="sm">곱셈 · 계산 근력</span></button>
+        <button class="mode" data-m="real">실전 감각<span class="sm">전 유형 랜덤 · 실전처럼</span></button>
+        <button class="mode" data-m="types">유형별 학습<span class="sm">농도·거속시·경우의 수 …</span></button>
+      </div>
+    </div>
+
+    <div id="typeSel" class="hidden">
+      <div class="label">유형별 학습 · 유형 선택</div>
+      <div class="modelist" id="typeList">
+        <button class="mode on" data-m="data">자료해석·계산<span class="sm">표·비중·증가율·비교</span></button>
         <button class="mode" data-m="conc">농도 (소금물)<span class="sm">소금물·농도 계산</span></button>
         <button class="mode" data-m="speed">거리·속력·시간<span class="sm">거속시</span></button>
         <button class="mode" data-m="work">일의 양 (일률)<span class="sm">함께 하면 며칠</span></button>
@@ -217,8 +228,8 @@
         <button class="mode" data-m="profit">원가·이익<span class="sm">정가·할인·이익</span></button>
         <button class="mode" data-m="avg">평균<span class="sm">평균·총점</span></button>
         <button class="mode" data-m="ratio">비율·비례<span class="sm">비·비례배분</span></button>
-        <button class="mode" data-m="mul">곱하기 마스터<span class="sm">직접 입력 · 곱셈 감각</span></button>
       </div>
+      <button class="sbtn" id="typeBack" style="width:100%;margin-top:10px">‹ 모드 선택</button>
     </div>
     <div id="diffSel" class="hidden">
       <div class="label" id="diffTitle">난이도</div>
@@ -255,6 +266,36 @@
       <button class="mode on" data-c="fallacy">논리적 오류<span class="sm">사례 → 오류 유형</span></button>
       <button class="mode" data-c="contra">명제 · 대우<span class="sm">대우로 옳은 것</span></button>
       <button class="mode" data-c="syllog">삼단논법<span class="sm">전제 → 결론 추론</span></button>
+    </div>
+  </div>
+
+  <!-- INFO (정보) -->
+  <div id="info" class="hidden">
+    <div class="subhead"><button class="lbtn" id="toLanding4" aria-label="뒤로"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="subttl">정보 능력</div></div>
+    <div class="label">유형 선택</div>
+    <div class="modelist" id="infoList">
+      <button class="mode on" data-c="radix">진법 변환<span class="sm">2·8·16진수 ↔ 10진수</span></button>
+      <button class="mode" data-c="excel">엑셀 함수<span class="sm">SUM·IF·COUNTIF·RANK …</span></button>
+    </div>
+  </div>
+
+  <!-- RES (자원관리) -->
+  <div id="res" class="hidden">
+    <div class="subhead"><button class="lbtn" id="toLanding5" aria-label="뒤로"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="subttl">자원관리 능력</div></div>
+    <div class="label">유형 선택</div>
+    <div class="modelist" id="resList">
+      <button class="mode on" data-c="fx">환율 계산<span class="sm">원 ↔ 외화 환산</span></button>
+      <button class="mode" data-c="cost">최소 비용<span class="sm">요금제·비용 비교</span></button>
+    </div>
+  </div>
+
+  <!-- ORG (조직이해) -->
+  <div id="org" class="hidden">
+    <div class="subhead"><button class="lbtn" id="toLanding6" aria-label="뒤로"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="subttl">조직이해 능력</div></div>
+    <div class="label">유형 선택</div>
+    <div class="modelist" id="orgList">
+      <button class="mode on" data-c="orgcon">경영·조직 개념<span class="sm">SWOT·BCG·조직구조 …</span></button>
+      <button class="mode" data-c="etiq">국제 매너<span class="sm">비즈니스 에티켓 O/X</span></button>
     </div>
   </div>
 
@@ -466,7 +507,7 @@ const GENS=[growthEst,growthEst,growthEst,shareEst,shareEst,shareEst,timesEst,ti
 const TABLE_LIMIT={'하':60,'중':40,'상':28};
 const CALC_LIMIT={'하':35,'중':26,'상':20};
 const REAL_LIMIT={'하':60,'중':45,'상':35};
-function curLimit(){const L=isPS(S.mode)?PS_LIMIT:isComm(S.mode)?COMM_LIMIT:(S.mode==='real'||isMath(S.mode))?REAL_LIMIT:S.mode==='table'?TABLE_LIMIT:S.mode==='calc'?CALC_LIMIT:LIMIT;return L[S.diff]*1000;}
+function curLimit(){const L=isPS(S.mode)?PS_LIMIT:isText(S.mode)?COMM_LIMIT:(S.mode==='real'||isMath(S.mode))?REAL_LIMIT:S.mode==='table'?TABLE_LIMIT:S.mode==='calc'?CALC_LIMIT:LIMIT;return (L[S.diff]||L['중']||30)*1000;}
 const T_THEMES=[
   {title:'인천공항 노선별 국제선 여객',unit:'만 명',noun:'여객',rows:['미주','유럽','중국','동남아','일본']},
   {title:'인천공항 유형별 항공화물',unit:'천 톤',noun:'물동량',rows:['수출','수입','환적','우편']},
@@ -905,10 +946,89 @@ const PS_MODES=['fallacy','contra','syllog'];
 const PS_NAME={fallacy:'논리적 오류',contra:'명제·대우',syllog:'삼단논법'};
 const PS_LIMIT={'하':70,'중':60,'상':45};
 const PS_GENS={fallacy:genFallacy,contra:genContra,syllog:genSyllog};
-const TEXT_GENS=Object.assign({},COMM_GENS,PS_GENS);
+/* ===== 정보능력 ===== */
+const BASE_NAME={2:'2진수',8:'8진수',16:'16진수'};
+function genRadix(){const b=choice([2,8,16]);const n=randInt(b===2?8:20,b===2?60:250);
+  if(Math.random()<0.5){const cor=n.toString(b).toUpperCase();const c=new Set([cor]);let g=0;while(c.size<4&&g++<60){const d=n+choice([-3,-2,-1,1,2,3]);if(d>0)c.add(d.toString(b).toUpperCase());}const opts=shuf([...c]);return {q:`10진수 ${n}`,ask:`${BASE_NAME[b]}로 변환하면?`,opts,correctIdx:opts.indexOf(cor),exp:`${n} → ${BASE_NAME[b]} <b>${cor}</b>. (${b}로 계속 나눈 나머지를 아래에서 위로 읽음)`};}
+  const s=n.toString(b).toUpperCase();const cor=String(n);const c=new Set([cor]);let g=0;while(c.size<4&&g++<60){const d=n+choice([-3,-2,-1,1,2,3]);if(d>0)c.add(String(d));}const opts=shuf([...c]);return {q:`${BASE_NAME[b]} ${s}`,ask:'10진수로 변환하면?',opts,correctIdx:opts.indexOf(cor),exp:`${BASE_NAME[b]} ${s} = 10진수 <b>${n}</b>. (각 자리에 ${b}의 거듭제곱 가중치를 곱해 합산)`};}
+function genExcel(){const t=choice(['sum','avg','max','min','countif','round','mod','if','left','rank']);
+  if(t==='sum'){const a=Array.from({length:5},()=>randInt(2,40));const v=a.reduce((x,y)=>x+y,0);const o=numOpts(v,0,'');return {q:`A1:A5 = ${a.join(', ')}`,ask:'=SUM(A1:A5) 의 값은?',opts:o.opts,correctIdx:o.correctIdx,exp:`SUM=합계 → ${a.join('+')} = <b>${v}</b>.`};}
+  if(t==='avg'){const a=Array.from({length:4},()=>randInt(60,100));const sum=a.reduce((x,y)=>x+y,0);const v=roundTo(sum/4,1);const o=numOpts(v,1,'');return {q:`A1:A4 = ${a.join(', ')}`,ask:'=AVERAGE(A1:A4) 의 값은?',opts:o.opts,correctIdx:o.correctIdx,exp:`AVERAGE=평균 → 합 ${sum} ÷ 4 = <b>${v}</b>.`};}
+  if(t==='max'){const a=Array.from({length:5},()=>randInt(10,99));const v=Math.max(...a);const o=numOpts(v,0,'');return {q:`A1:A5 = ${a.join(', ')}`,ask:'=MAX(A1:A5) 의 값은?',opts:o.opts,correctIdx:o.correctIdx,exp:`MAX=최댓값 → <b>${v}</b>.`};}
+  if(t==='min'){const a=Array.from({length:5},()=>randInt(10,99));const v=Math.min(...a);const o=numOpts(v,0,'');return {q:`A1:A5 = ${a.join(', ')}`,ask:'=MIN(A1:A5) 의 값은?',opts:o.opts,correctIdx:o.correctIdx,exp:`MIN=최솟값 → <b>${v}</b>.`};}
+  if(t==='countif'){const a=Array.from({length:6},()=>randInt(50,100));const k=choice([60,70,80,90]);const v=a.filter(x=>x>=k).length;const o=numOpts(v,0,'개');return {q:`A1:A6 = ${a.join(', ')}`,ask:`=COUNTIF(A1:A6,">=${k}") 의 값은?`,opts:o.opts,correctIdx:o.correctIdx,exp:`COUNTIF=조건을 만족하는 셀 개수 → ${k} 이상인 값은 <b>${v}개</b>.`};}
+  if(t==='round'){const x=randInt(105,9995)/10;const v=Math.round(x);const o=numOpts(v,0,'');return {q:`A1 = ${x}`,ask:'=ROUND(A1, 0) 의 값은?',opts:o.opts,correctIdx:o.correctIdx,exp:`ROUND(…,0)=소수 첫째 자리에서 반올림 → <b>${v}</b>.`};}
+  if(t==='mod'){const a=randInt(20,99),b=randInt(3,9),v=a%b;const o=numOpts(v,0,'');return {q:`=MOD(${a}, ${b})`,ask:'결과 값은?',opts:o.opts,correctIdx:o.correctIdx,exp:`MOD=나머지 → ${a}÷${b}의 나머지 = <b>${v}</b>.`};}
+  if(t==='if'){const v=randInt(40,100),k=choice([60,70,80]);const cor=v>=k?'통과':'재시험';const opts=['통과','재시험'];return {q:`A1 = ${v}`,ask:`=IF(A1>=${k},"통과","재시험") 의 결과는?`,opts,correctIdx:opts.indexOf(cor),exp:`IF=조건 판별 → ${v} ${v>=k?'≥':'<'} ${k} 이므로 <b>${cor}</b>.`};}
+  if(t==='left'){const src=choice(['KOR2024','ICN0417','A1B2C3D4','SEOUL777','GATE12A']);const n=randInt(2,4);const cor=src.slice(0,n);const set=new Set([cor,src.slice(0,n+1),src.slice(-n),src.slice(1,1+n)]);const opts=shuf([...set]).slice(0,4);if(!opts.includes(cor))opts[0]=cor;return {q:`A1 = "${src}"`,ask:`=LEFT(A1, ${n}) 의 결과는?`,opts,correctIdx:opts.indexOf(cor),exp:`LEFT=왼쪽에서 ${n}글자 → <b>${cor}</b>.`};}
+  const a=Array.from({length:5},()=>randInt(50,99));const x=a[randInt(0,4)];const v=a.filter(y=>y>x).length+1;const o=numOpts(v,0,'등');return {q:`A1:A5 = ${a.join(', ')}`,ask:`=RANK(${x}, A1:A5, 0) 의 값은?`,opts:o.opts,correctIdx:o.correctIdx,exp:`RANK(…,0)=내림차순 순위 → ${x}보다 큰 값이 ${v-1}개이므로 <b>${v}등</b>.`};}
+const INFO_MODES=['radix','excel'],INFO_NAME={radix:'진법 변환',excel:'엑셀 함수'},INFO_GENS={radix:genRadix,excel:genExcel};
+function isInfo(m){return INFO_MODES.includes(m);}
+let infoCursor=0;function updInfo(){$('#infoList').querySelectorAll('.mode').forEach((x,i)=>x.classList.toggle('on',i===infoCursor));}
+function movInfo(d){infoCursor=(infoCursor+d+INFO_MODES.length)%INFO_MODES.length;updInfo();}
+function selInfo(){start(INFO_MODES[infoCursor]);}
+/* ===== 자원관리 능력 ===== */
+function genFx(){const cur=choice([['달러',1200,1450],['유로',1400,1650]]);const rate=randInt(cur[1],cur[2]);const amt=randInt(2,40)*10;const won=amt*rate;
+  if(Math.random()<0.5){const o=numOpts(won,0,'원');return {q:`1${cur[0]} = ${fmt(rate)}원\n${fmt(amt)}${cur[0]}는 얼마?`,ask:'원으로 환산하면?',opts:o.opts,correctIdx:o.correctIdx,exp:`${fmt(amt)} × ${fmt(rate)} = <b>${fmt(won)}원</b>.`};}
+  const o=numOpts(amt,0,cur[0]);return {q:`1${cur[0]} = ${fmt(rate)}원\n${fmt(won)}원은 얼마?`,ask:`${cur[0]}로 환산하면?`,opts:o.opts,correctIdx:o.correctIdx,exp:`${fmt(won)} ÷ ${fmt(rate)} = <b>${fmt(amt)}${cur[0]}</b>.`};}
+function genCost(){const use=randInt(20,90);let plans,min,g=0;do{plans=['A','B','C'].map(n=>{const base=randInt(0,4)*1000;const per=randInt(3,20)*10;return {n,base,per,cost:base+per*use};});const s=[...plans].sort((a,b)=>a.cost-b.cost);min=s[0];g++;if(s[0].cost!==s[1].cost)break;}while(g<60);const opts=plans.map(p=>p.n+' 요금제');return {q:`${use}분 사용 시\nA: 기본 ${fmt(plans[0].base)}원 + 분당 ${plans[0].per}원\nB: 기본 ${fmt(plans[1].base)}원 + 분당 ${plans[1].per}원\nC: 기본 ${fmt(plans[2].base)}원 + 분당 ${plans[2].per}원`,ask:'가장 저렴한 요금제는?',opts,correctIdx:opts.indexOf(min.n+' 요금제'),exp:`A ${fmt(plans[0].cost)} · B ${fmt(plans[1].cost)} · C ${fmt(plans[2].cost)}원 → <b>${min.n} 요금제</b>가 최저.`};}
+const RES_MODES=['fx','cost'],RES_NAME={fx:'환율 계산',cost:'최소 비용'},RES_GENS={fx:genFx,cost:genCost};
+function isRes(m){return RES_MODES.includes(m);}
+let resCursor=0;function updRes(){$('#resList').querySelectorAll('.mode').forEach((x,i)=>x.classList.toggle('on',i===resCursor));}
+function movRes(d){resCursor=(resCursor+d+RES_MODES.length)%RES_MODES.length;updRes();}
+function selRes(){start(RES_MODES[resCursor]);}
+/* ===== 조직이해 능력 ===== */
+const ORG=[
+ {t:'SWOT 분석',d:'강점·약점·기회·위협의 4요소로 내부·외부 환경을 분석하는 기법'},
+ {t:'BCG 매트릭스',d:'시장성장률과 점유율로 사업을 별·캐시카우·물음표·개로 분류'},
+ {t:'포터의 5가지 경쟁요인',d:'신규진입·대체재·구매자·공급자·기존경쟁으로 산업 매력도를 분석'},
+ {t:'차별화 전략',d:'제품·서비스의 독특함으로 경쟁우위를 얻는 본원적 전략'},
+ {t:'원가우위 전략',d:'낮은 비용으로 경쟁우위를 확보하는 본원적 전략'},
+ {t:'마케팅 4P',d:'제품·가격·유통·촉진의 마케팅 믹스 구성요소'},
+ {t:'기능식 조직',d:'생산·영업·인사 등 업무 기능별로 나눈 조직 구조'},
+ {t:'사업부제 조직',d:'제품·지역·고객 등 사업 단위별로 독립 운영하는 구조'},
+ {t:'매트릭스 조직',d:'기능과 프로젝트를 이중으로 결합해 두 명의 상사를 두는 구조'},
+ {t:'전결',d:'위임받은 사람이 최종 결재권자를 대신하여 스스로 결재함'},
+ {t:'대결',d:'결재권자가 부재중일 때 대리인이 대신 결재함'},
+ {t:'MBO(목표관리)',d:'상하가 함께 목표를 정하고 성과를 평가하는 관리 기법'},
+ {t:'브레인스토밍',d:'비판 없이 자유롭게 다량의 아이디어를 내는 집단 발상법'},
+ {t:'벤치마킹',d:'우수 기업의 방법을 배워 자사에 적용하는 경영 기법'},
+ {t:'아웃소싱',d:'비핵심 업무를 외부 전문업체에 위탁하는 것'},
+ {t:'블루오션',d:'경쟁이 없는 새로운 시장을 창출하는 전략'},
+ {t:'캐시카우',d:'점유율은 높지만 성장은 낮아 안정적 수익을 내는 사업'},
+ {t:'매슬로 욕구단계',d:'생리·안전·사회·존경·자아실현 순의 5단계 욕구 이론'},
+ {t:'카르텔',d:'같은 업종 기업들이 독립성을 유지한 채 가격·생산을 협정'},
+ {t:'ERP',d:'구매·생산·재무 등 전사 자원을 통합 관리하는 정보시스템'},
+ {t:'OJT',d:'실무 현장에서 직접 일하며 배우는 직장 내 훈련'},
+ {t:'M&A',d:'기업의 인수와 합병'}
+];
+function genOrg(){const it=ORG[Math.floor(Math.random()*ORG.length)];const opts=shuf([it.t].concat(pickN(ORG.map(o=>o.t),3,it.t)));return {q:`「${it.d}」`,ask:'이 설명에 해당하는 개념은?',opts,correctIdx:opts.indexOf(it.t),exp:`<b>${it.t}</b> — ${it.d}`};}
+const ETIQ=[
+ {s:'받은 명함을 곧바로 주머니에 넣지 않고 잠시 살펴본 뒤 정중히 보관한다.',o:true,x:'받은 명함을 바로 넣는 것은 결례. 잠시 보고 보관하는 것이 예의.'},
+ {s:'식사 중 밥그릇에 젓가락을 수직으로 꽂아 두는 것은 예의 바른 행동이다.',o:false,x:'젓가락을 밥에 꽂는 것은 제사를 연상시켜 큰 금기.'},
+ {s:'이슬람권·인도 등에서는 왼손으로 음식을 건네는 것을 삼간다.',o:true,x:'왼손은 부정하게 여겨 오른손을 사용.'},
+ {s:'미국 레스토랑에서는 팁을 주지 않아도 결례가 아니다.',o:false,x:'미국은 팁 문화가 정착되어 보통 15~20%가 관례.'},
+ {s:'무슬림에게는 돼지고기와 술을 권하지 않도록 주의한다.',o:true,x:'이슬람 율법상 돼지고기·음주 금지(할랄).'},
+ {s:'힌두교도에게 소고기 요리를 대접하는 것은 좋은 배려다.',o:false,x:'힌두교는 소를 신성시하여 소고기를 금기시함.'},
+ {s:'서양의 13, 동아시아의 4는 불길한 숫자로 기피될 수 있다.',o:true,x:'13(서양)·4(死 연상)은 기피 대상.'},
+ {s:'태국 등에서 상대의 머리를 함부로 만지는 것은 무례한 행동이다.',o:true,x:'머리를 신성시하여 함부로 만지면 실례.'},
+ {s:'회의에서 상대의 말을 끊고 반박하는 것이 적극성으로 좋게 평가된다.',o:false,x:'말을 끊는 것은 무례. 끝까지 듣고 발언.'},
+ {s:'약속에 늦을 경우 미리 연락해 양해를 구하는 것이 예의다.',o:true,x:'시간 약속과 사전 연락은 신뢰의 기본.'},
+ {s:'악수는 눈을 맞추며 적당한 힘으로 하고 너무 오래 잡지 않는다.',o:true,x:'눈맞춤과 적절한 악력이 기본.'},
+ {s:'선물할 때 상대 문화의 금기(흰 꽃, 시계 등)를 확인한다.',o:true,x:'문화별 선물 금기 확인은 필수 매너.'},
+ {s:'비즈니스 이메일은 제목 없이 본문만 길게 보내는 것이 정중하다.',o:false,x:'제목으로 용건을 명확히 밝히는 것이 예의.'},
+ {s:'상대국 언어로 간단한 인사말을 준비하면 호감을 줄 수 있다.',o:true,x:'현지어 인사는 성의로 받아들여짐.'}
+];
+function genEtiq(){const it=ETIQ[Math.floor(Math.random()*ETIQ.length)];const opts=['O (맞다)','X (틀리다)'];return {q:`「${it.s}」`,ask:'국제 비즈니스 매너로 옳으면 O, 틀리면 X',opts,correctIdx:it.o?0:1,exp:it.x};}
+const ORG_MODES=['orgcon','etiq'],ORG_NAME={orgcon:'경영·조직 개념',etiq:'국제 매너'},ORG_GENS={orgcon:genOrg,etiq:genEtiq};
+function isOrg(m){return ORG_MODES.includes(m);}
+let orgCursor=0;function updOrg(){$('#orgList').querySelectorAll('.mode').forEach((x,i)=>x.classList.toggle('on',i===orgCursor));}
+function movOrg(d){orgCursor=(orgCursor+d+ORG_MODES.length)%ORG_MODES.length;updOrg();}
+function selOrg(){start(ORG_MODES[orgCursor]);}
+const TEXT_GENS=Object.assign({},COMM_GENS,PS_GENS,INFO_GENS,RES_GENS,ORG_GENS);
 function isPS(m){return PS_MODES.includes(m);}
 function isText(m){return Object.prototype.hasOwnProperty.call(TEXT_GENS,m);}
-function domScreen(m){return isComm(m)?'comm':isPS(m)?'ps':'setup';}
+function domScreen(m){return isComm(m)?'comm':isPS(m)?'ps':isInfo(m)?'info':isRes(m)?'res':isOrg(m)?'org':'setup';}
 let psCursor=0;
 function updatePS(){$('#psList').querySelectorAll('.mode').forEach((x,i)=>x.classList.toggle('on',i===psCursor));}
 function movePS(d){psCursor=(psCursor+d+PS_MODES.length)%PS_MODES.length;updatePS();}
@@ -919,11 +1039,16 @@ let curDiff='중',S=null;
 $('#diffOpts').addEventListener('click',e=>{const b=e.target.closest('.opt');if(!b)return;
   $('#diffOpts').querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');curDiff=b.dataset.v;});
 function setDiff(i){const btns=$('#diffOpts').querySelectorAll('.opt');btns.forEach(x=>x.classList.remove('on'));btns[i].classList.add('on');curDiff=btns[i].dataset.v;}
-function show(id){['landing','setup','comm','ps','quiz','result','flash','fresult'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));if(id==='setup'){$('#modeSel').classList.remove('hidden');$('#diffSel').classList.add('hidden');updateModeCursor();}if(id==='landing'){landCursor=0;updateLand();}if(id==='comm'){commCursor=0;updateComm();}if(id==='ps'){psCursor=0;updatePS();}}
-let pendingMode='real',modeCursor=0;
-const MODE_LIST=['real','data','conc','speed','work','combo','profit','avg','ratio','mul'],MODE_NAME={real:'실전 감각',data:'자료해석·계산',conc:'농도(소금물)',speed:'거리·속력·시간',work:'일의 양',combo:'경우의 수·확률',profit:'원가·이익',avg:'평균',ratio:'비율·비례',mul:'곱하기 마스터'};
+function show(id){['landing','setup','comm','ps','info','res','org','quiz','result','flash','fresult'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));if(id==='setup'){$('#modeSel').classList.remove('hidden');$('#diffSel').classList.add('hidden');$('#typeSel').classList.add('hidden');updateModeCursor();}if(id==='landing'){landCursor=0;updateLand();}if(id==='comm'){commCursor=0;updateComm();}if(id==='ps'){psCursor=0;updatePS();}if(id==='info'){infoCursor=0;updInfo();}if(id==='res'){resCursor=0;updRes();}if(id==='org'){orgCursor=0;updOrg();}}
+let pendingMode='mul',modeCursor=0;
+const MODE_LIST=['mul','real','types'],MODE_NAME={mul:'기초 탄탄',real:'실전 감각',data:'자료해석·계산',conc:'농도(소금물)',speed:'거리·속력·시간',work:'일의 양',combo:'경우의 수·확률',profit:'원가·이익',avg:'평균',ratio:'비율·비례'};
 const MATH_GENS={conc:genConc,speed:genSpeed,work:genWork,combo:genCombo,profit:genProfit,avg:genAvg,ratio:genRatio,data:d=>choice([genTable,genPayroll,genMulCmp,genRank,genSum])(d)};
 function isMath(m){return Object.prototype.hasOwnProperty.call(MATH_GENS,m);}
+const TYPE_LIST=['data','conc','speed','work','combo','profit','avg','ratio'];
+let typeCursor=0;
+function updateTypeCursor(){$('#typeList').querySelectorAll('.mode').forEach((x,i)=>x.classList.toggle('on',i===typeCursor));}
+function moveType(d){typeCursor=(typeCursor+d+TYPE_LIST.length)%TYPE_LIST.length;updateTypeCursor();}
+function selType(){chooseMode(TYPE_LIST[typeCursor]);}
 function updateModeCursor(){$('#modeList').querySelectorAll('.mode').forEach((x,i)=>x.classList.toggle('on',i===modeCursor));}
 function moveMode(d){modeCursor=(modeCursor+d+MODE_LIST.length)%MODE_LIST.length;updateModeCursor();}
 let landCursor=0;
@@ -931,7 +1056,7 @@ function landItems(){return [...document.querySelectorAll('#landing .domain:not(
 function updateLand(){landItems().forEach((b,i)=>b.classList.toggle('on',i===landCursor));}
 function moveLand(d){const it=landItems();if(!it.length)return;landCursor=(landCursor+d+it.length)%it.length;updateLand();}
 function selLand(){const it=landItems();if(it[landCursor])it[landCursor].click();}
-function chooseMode(m){if(m==='tips'){openTips();return;}pendingMode=m;$('#modeSel').classList.add('hidden');$('#diffSel').classList.remove('hidden');const sp=$('#specialOpt');if(m==='mul'){sp.classList.remove('hidden');}else{sp.classList.add('hidden');if(curDiff==='스페셜')setDiff(1);}$('#diffTitle').textContent=m==='mul'?'곱하기 마스터 · 자릿수 (하1·중2·상3자리 / 스페셜 소수점)':MODE_NAME[m]+' · 난이도';}
+function chooseMode(m){if(m==='types'){$('#modeSel').classList.add('hidden');$('#typeSel').classList.remove('hidden');typeCursor=0;updateTypeCursor();return;}if(isMath(m)){curDiff='중';start(m);return;}pendingMode=m;$('#modeSel').classList.add('hidden');$('#typeSel').classList.add('hidden');$('#diffSel').classList.remove('hidden');const sp=$('#specialOpt');if(m==='mul'){sp.classList.remove('hidden');}else{sp.classList.add('hidden');if(curDiff==='스페셜')setDiff(1);}$('#diffTitle').textContent=m==='mul'?'기초 탄탄 · 자릿수 (하1·중2·상3자리 / 스페셜 소수점)':MODE_NAME[m]+' · 난이도';}
 function startChosen(){if(pendingMode==='flash')startFlash(curDiff);else start(pendingMode);}
 
 function start(mode){
@@ -1074,14 +1199,14 @@ function reveal(picked){
     setTimeout(()=>{if(!(S&&S.running)||$('#quiz').classList.contains('hidden'))return;
       if(S.ok>=S.count)finish();else load();},110);return;
   }
-  if(c.exp){const LBL={spell:'국립국어원',hanja:'한자 풀이',idiom:'뜻풀이',proverb:'쓰임',syn:'유의어',idiomfit:'성어 구별',fallacy:'논리적 오류',contra:'대우 규칙',syllog:'삼단논법'};const _l=LBL[S.mode]||'해설';$('#expNote').innerHTML=`<span class="tag">📖 ${_l}</span>${c.exp}`;$('#expNote').classList.remove('hidden');$('#nextBtn').classList.remove('hidden');S.awaitNext=true;}
+  if(c.exp){const LBL={spell:'국립국어원',hanja:'한자 풀이',idiom:'뜻풀이',proverb:'쓰임',syn:'유의어',idiomfit:'성어 구별',fallacy:'논리적 오류',contra:'대우 규칙',syllog:'삼단논법',radix:'진법 변환',excel:'엑셀 함수',fx:'환율',cost:'비용 비교',orgcon:'조직 개념',etiq:'국제 매너'};const _l=LBL[S.mode]||'해설';$('#expNote').innerHTML=`<span class="tag">📖 ${_l}</span>${c.exp}`;$('#expNote').classList.remove('hidden');$('#nextBtn').classList.remove('hidden');S.awaitNext=true;}
   else setTimeout(()=>nextQ(),ok?450:1150);
 }
 function finish(){
   S.running=false;cancelAnimationFrame(S.raf);
   const done=S.ok+S.ng,acc=done?Math.round(S.ok/done*100):0;
   const avg=S.times.length?S.times.reduce((a,b)=>a+b,0)/S.times.length:0;
-  $('#rTitle').textContent=S.sprint?(S.dead?`⛔ 탈락 · ${S.ok}문제 생존`:`🏁 완주 성공! 100문제`):isPS(S.mode)?('문제해결 · '+PS_NAME[S.mode]):isComm(S.mode)?('의사소통 · '+COMM_NAME[S.mode]):`${MODE_NAME[S.mode]||'수리'} · ${S.diff}`;
+  $('#rTitle').textContent=S.sprint?(S.dead?`⛔ 탈락 · ${S.ok}문제 생존`:`🏁 완주 성공! 100문제`):isPS(S.mode)?('문제해결 · '+PS_NAME[S.mode]):isComm(S.mode)?('의사소통 · '+COMM_NAME[S.mode]):isInfo(S.mode)?('정보 · '+INFO_NAME[S.mode]):isRes(S.mode)?('자원관리 · '+RES_NAME[S.mode]):isOrg(S.mode)?('조직이해 · '+ORG_NAME[S.mode]):`${MODE_NAME[S.mode]||'수리'} · ${S.diff}`;
   $('#rAcc').textContent=acc+'%';$('#rAvg').textContent=avg.toFixed(1)+'s';
   $('#rTot').textContent=done;$('#rStreak').textContent=S.best;
   const wl=$('#wList');wl.innerHTML='';
@@ -1141,6 +1266,8 @@ function closeTips(){$('#tips').classList.add('hidden');}
 
 $('#modeList').addEventListener('click',e=>{const b=e.target.closest('.mode');if(!b)return;modeCursor=[...b.parentNode.children].indexOf(b);updateModeCursor();chooseMode(b.dataset.m);});
 $('#backBtn').onclick=()=>{$('#diffSel').classList.add('hidden');$('#modeSel').classList.remove('hidden');updateModeCursor();};
+$('#typeBack').onclick=()=>{$('#typeSel').classList.add('hidden');$('#modeSel').classList.remove('hidden');updateModeCursor();};
+$('#typeList').addEventListener('click',e=>{const b=e.target.closest('.mode');if(!b)return;typeCursor=[...b.parentNode.children].indexOf(b);updateTypeCursor();chooseMode(b.dataset.m);});
 $('#startBtn').onclick=startChosen;
 $('#domMath').onclick=()=>show('setup');
 $('#toLanding').onclick=()=>show('landing');
@@ -1160,6 +1287,15 @@ $('#commList').addEventListener('click',e=>{const b=e.target.closest('.mode');if
 $('#domPS').onclick=()=>show('ps');
 $('#toLanding3').onclick=()=>show('landing');
 $('#psList').addEventListener('click',e=>{const b=e.target.closest('.mode');if(!b)return;const idx=[...$('#psList').children].indexOf(b);if(idx>=0){psCursor=idx;updatePS();}start(b.dataset.c);});
+$('#domInfo').onclick=()=>show('info');
+$('#toLanding4').onclick=()=>show('landing');
+$('#infoList').addEventListener('click',e=>{const b=e.target.closest('.mode');if(!b)return;infoCursor=[...b.parentNode.children].indexOf(b);updInfo();start(b.dataset.c);});
+$('#domRes').onclick=()=>show('res');
+$('#toLanding5').onclick=()=>show('landing');
+$('#resList').addEventListener('click',e=>{const b=e.target.closest('.mode');if(!b)return;resCursor=[...b.parentNode.children].indexOf(b);updRes();start(b.dataset.c);});
+$('#domOrg').onclick=()=>show('org');
+$('#toLanding6').onclick=()=>show('landing');
+$('#orgList').addEventListener('click',e=>{const b=e.target.closest('.mode');if(!b)return;orgCursor=[...b.parentNode.children].indexOf(b);updOrg();start(b.dataset.c);});
 $('#fAgainBtn').onclick=()=>startFlash(lastFlashDiff);
 $('#fHomeBtn').onclick=()=>show('setup');
 document.addEventListener('keydown',e=>{
@@ -1193,6 +1329,27 @@ document.addEventListener('keydown',e=>{
     else if(e.key==='Escape'){e.preventDefault();show('landing');}
     return;
   }
+  if(!$('#info').classList.contains('hidden')){
+    if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();movInfo(1);}
+    else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();movInfo(-1);}
+    else if(e.key==='Enter'||e.key===' '||e.code==='Space'){e.preventDefault();selInfo();}
+    else if(e.key==='Escape'){e.preventDefault();show('landing');}
+    return;
+  }
+  if(!$('#res').classList.contains('hidden')){
+    if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();movRes(1);}
+    else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();movRes(-1);}
+    else if(e.key==='Enter'||e.key===' '||e.code==='Space'){e.preventDefault();selRes();}
+    else if(e.key==='Escape'){e.preventDefault();show('landing');}
+    return;
+  }
+  if(!$('#org').classList.contains('hidden')){
+    if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();movOrg(1);}
+    else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();movOrg(-1);}
+    else if(e.key==='Enter'||e.key===' '||e.code==='Space'){e.preventDefault();selOrg();}
+    else if(e.key==='Escape'){e.preventDefault();show('landing');}
+    return;
+  }
   if(!$('#setup').classList.contains('hidden')){
     if(!$('#diffSel').classList.contains('hidden')){
       const opts=[...$('#diffOpts').querySelectorAll('.opt')].filter(b=>!b.classList.contains('hidden'));
@@ -1201,7 +1358,12 @@ document.addEventListener('keydown',e=>{
       if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();setI(i+1);}
       else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();setI(i-1);}
       else if(e.key==='Enter'||e.key===' '||e.code==='Space'){e.preventDefault();startChosen();}
-      else if(e.key==='Escape'){e.preventDefault();$('#diffSel').classList.add('hidden');$('#modeSel').classList.remove('hidden');}
+      else if(e.key==='Escape'){e.preventDefault();$('#diffSel').classList.add('hidden');$('#modeSel').classList.remove('hidden');updateModeCursor();}
+    }else if(!$('#typeSel').classList.contains('hidden')){
+      if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();moveType(1);}
+      else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();moveType(-1);}
+      else if(e.key==='Enter'||e.key===' '||e.code==='Space'){e.preventDefault();selType();}
+      else if(e.key==='Escape'){e.preventDefault();$('#typeSel').classList.add('hidden');$('#modeSel').classList.remove('hidden');updateModeCursor();}
     }else{
       if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();moveMode(1);}
       else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();moveMode(-1);}
@@ -1211,7 +1373,7 @@ document.addEventListener('keydown',e=>{
     return;
   }
   if(!$('#quiz').classList.contains('hidden')&&S&&S.running){
-    if(e.key==='Escape'){e.preventDefault();if((S.ok+S.ng)>0){finish();}else{S.running=false;cancelAnimationFrame(S.raf);show(isComm(S.mode)?'comm':'setup');}return;}
+    if(e.key==='Escape'){e.preventDefault();if((S.ok+S.ng)>0){finish();}else{S.running=false;cancelAnimationFrame(S.raf);show(domScreen(S.mode));}return;}
     if(S.mode==='mul')return;
     if(S.answered){if(S.awaitNext&&(e.key===' '||e.code==='Space'||e.key==='Enter'||e.key==='ArrowRight')){e.preventDefault();S.awaitNext=false;nextQ();}return;}
     if(e.key==='ArrowRight'){e.preventDefault();moveGrid(0,1);}
