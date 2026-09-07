@@ -198,7 +198,7 @@
     <div class="domains">
       <button class="domain on" id="domMath">수리영역 연습<span class="sm">어림·자료해석·곱셈</span></button>
       <button class="domain" id="domComm">의사소통 능력<span class="sm">속담·사자성어·한자어·맞춤법</span></button>
-      <button class="domain dis" disabled>문제해결<span class="sm">준비 중</span></button>
+      <button class="domain" id="domPS">문제해결 능력<span class="sm">논리적 오류·명제·삼단논법</span></button>
     </div>
   </div>
 
@@ -237,6 +237,17 @@
       <button class="mode" data-c="idiom">사자성어<span class="sm">한자성어 → 뜻</span></button>
       <button class="mode" data-c="hanja">한자어 표기<span class="sm">밑줄 단어의 바른 한자</span></button>
       <button class="mode" data-c="spell">맞춤법<span class="sm">바른 표기 고르기</span></button>
+    </div>
+  </div>
+
+  <!-- PS (문제해결) -->
+  <div id="ps" class="hidden">
+    <div class="subhead"><button class="lbtn" id="toLanding3" aria-label="뒤로"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="subttl">문제해결 능력</div></div>
+    <div class="label">유형 선택</div>
+    <div class="modelist" id="psList">
+      <button class="mode on" data-c="fallacy">논리적 오류<span class="sm">사례 → 오류 유형</span></button>
+      <button class="mode" data-c="contra">명제 · 대우<span class="sm">대우로 옳은 것</span></button>
+      <button class="mode" data-c="syllog">삼단논법<span class="sm">전제 → 결론 추론</span></button>
     </div>
   </div>
 
@@ -448,7 +459,7 @@ const GENS=[growthEst,growthEst,growthEst,shareEst,shareEst,shareEst,timesEst,ti
 const TABLE_LIMIT={'하':60,'중':40,'상':28};
 const CALC_LIMIT={'하':35,'중':26,'상':20};
 const REAL_LIMIT={'하':60,'중':45,'상':35};
-function curLimit(){const L=isComm(S.mode)?COMM_LIMIT:S.mode==='real'?REAL_LIMIT:S.mode==='table'?TABLE_LIMIT:S.mode==='calc'?CALC_LIMIT:LIMIT;return L[S.diff]*1000;}
+function curLimit(){const L=isPS(S.mode)?PS_LIMIT:isComm(S.mode)?COMM_LIMIT:S.mode==='real'?REAL_LIMIT:S.mode==='table'?TABLE_LIMIT:S.mode==='calc'?CALC_LIMIT:LIMIT;return L[S.diff]*1000;}
 const T_THEMES=[
   {title:'인천공항 노선별 국제선 여객',unit:'만 명',noun:'여객',rows:['미주','유럽','중국','동남아','일본']},
   {title:'인천공항 유형별 항공화물',unit:'천 톤',noun:'물동량',rows:['수출','수입','환적','우편']},
@@ -790,12 +801,78 @@ function updateComm(){$('#commList').querySelectorAll('.mode').forEach((x,i)=>x.
 function moveComm(d){commCursor=(commCursor+d+COMM_MODES.length)%COMM_MODES.length;updateComm();}
 function selComm(){start(COMM_MODES[commCursor]);}
 
+/* ===== 문제해결 능력 (논리) ===== */
+const FALLACY_TYPES=['복합질문','흑백논리','원천봉쇄','순환논증','합성의 오류','분해의 오류','애매어의 오류','성급한 일반화','인신공격','피장파장','허수아비','논점 일탈','무지에 호소','미끄러운 비탈길','대중에 호소','권위에 호소','연민에 호소','잘못된 인과','잘못된 유추'];
+const FALLACY=[
+ {s:'너는 언제부터 커닝을 그만뒀니?',t:'복합질문',x:'답을 하면 「커닝을 해 왔다」는 숨은 전제를 인정하게 됨.'},
+ {s:'당신, 회사 돈 횡령을 아직도 하고 있습니까?',t:'복합질문',x:'「횡령해 왔다」를 전제로 깔아 답을 강요.'},
+ {s:'우리 편이 아니면 모두 적이다.',t:'흑백논리',x:'중립·제3의 입장을 배제하고 둘로만 나눔.'},
+ {s:'찬성 아니면 반대다. 침묵은 곧 반대다.',t:'흑백논리',x:'유보·무관심 등 다른 선택지를 배제.'},
+ {s:'그 비판은 열등감에서 나온 거라 들을 필요 없다.',t:'원천봉쇄',x:'반론을 미리 무자격으로 못박아 논의를 차단(우물에 독).'},
+ {s:'이 주장에 반대하는 사람은 애국심이 없는 것이다.',t:'원천봉쇄',x:'반대 자체를 원천 차단해 반론을 막음.'},
+ {s:'내 말이 맞아, 왜냐하면 내가 틀릴 리 없으니까.',t:'순환논증',x:'결론을 전제로 다시 씀(선결문제 요구).'},
+ {s:'이 법이 옳은 이유는 그것이 정의롭기 때문이다.',t:'순환논증',x:'결론과 전제가 같은 말의 반복.'},
+ {s:'선수 각자가 최고니까 이 팀도 최강이다.',t:'합성의 오류',x:'부분(개인)의 속성을 전체(팀)에 그대로 적용.'},
+ {s:'각 벽돌이 가벼우니 이 건물도 가볍다.',t:'합성의 오류',x:'부분→전체로 성질을 잘못 확장.'},
+ {s:'우리 회사는 우량 기업이니 직원도 모두 부자다.',t:'분해의 오류',x:'전체(회사)의 속성을 부분(직원)에 그대로 적용.'},
+ {s:'국가대표팀이 강하니 선수 개개인도 다 세계 최고다.',t:'분해의 오류',x:'전체→부분으로 성질을 잘못 나눔.'},
+ {s:'꼬리가 길면 밟힌다. 원숭이는 꼬리가 기니 밟힌다.',t:'애매어의 오류',x:'「꼬리가 길다」를 관용(악행 지속)과 문자(신체)로 뒤섞음.'},
+ {s:'모든 사람은 죄인이다. 죄인은 벌받아야 하니 모두 감옥에 가야 한다.',t:'애매어의 오류',x:'「죄인」을 종교적·법적 의미로 오가며 씀.'},
+ {s:'내 친구 둘이 그 식당에서 탈이 났으니 그 집은 다 위험해.',t:'성급한 일반화',x:'적은 사례로 전체를 단정.'},
+ {s:'그 나라 사람 한 명이 불친절했으니 그 국민은 다 불친절하다.',t:'성급한 일반화',x:'표본이 너무 적음.'},
+ {s:'그 사람 주장은 전과자가 하는 말이라 틀렸다.',t:'인신공격',x:'주장 내용이 아니라 사람을 공격.'},
+ {s:'그 평론가는 이혼했으니 그의 영화 평은 믿을 수 없다.',t:'인신공격',x:'평의 내용과 무관한 사생활로 공격.'},
+ {s:'너도 지각하면서 왜 나한테만 뭐라 해?',t:'피장파장',x:'상대의 잘못을 들어 내 잘못을 물타기(정황).'},
+ {s:'그는 복지 확대를 주장하는데, 결국 나라를 망하게 하자는 거다.',t:'허수아비',x:'상대 주장을 극단으로 왜곡해 공격.'},
+ {s:'환경도 중요하지만, 요즘 경제가 얼마나 어려운지 아세요?',t:'논점 일탈',x:'본래 논점을 벗어나 다른 얘기로 흐림.'},
+ {s:'유령이 없다는 증거가 없으니 유령은 있다.',t:'무지에 호소',x:'반증이 없다는 것을 참의 근거로 삼음.'},
+ {s:'게임을 허용하면 결국 폐인이 되어 인생이 망한다.',t:'미끄러운 비탈길',x:'작은 시작이 극단적 파국으로 이어진다고 비약.'},
+ {s:'모두가 이 브랜드를 쓰니 이게 최고다.',t:'대중에 호소',x:'다수가 그렇다는 것을 옳음의 근거로 삼음.'},
+ {s:'유명 의사가 추천했으니 이 식품은 무조건 효과 있다.',t:'권위에 호소',x:'권위자의 말을 무비판 수용.'},
+ {s:'제발 봐주세요, 저는 부양가족이 많습니다.',t:'연민에 호소',x:'동정심에 기대 논점을 대신함.'},
+ {s:'까마귀 날자 배 떨어지니 까마귀가 배를 떨어뜨렸다.',t:'잘못된 인과',x:'우연한 선후를 인과로 착각(거짓 원인).'},
+ {s:'인체는 기계와 비슷하니 고장난 부품 갈듯 장기만 갈면 된다.',t:'잘못된 유추',x:'약한 유사성으로 전체가 같다고 단정.'}
+];
+function genFallacy(){const it=FALLACY[Math.floor(Math.random()*FALLACY.length)];const opts=shuf([it.t].concat(pickN(FALLACY_TYPES,3,it.t)));return {q:'「'+it.s+'」',ask:'이 사례에 나타난 논리적 오류는?',opts:opts,correctIdx:opts.indexOf(it.t),exp:'<b>'+it.t+'</b> — '+it.x};}
+const CONTRA=[
+ {p:'비가 온다',np:'비가 오지 않는다',q:'땅이 젖는다',nq:'땅이 젖지 않는다'},
+ {p:'열심히 공부한다',np:'열심히 공부하지 않는다',q:'시험에 합격한다',nq:'시험에 합격하지 못한다'},
+ {p:'기온이 0도 이하다',np:'기온이 0도 이하가 아니다',q:'물이 언다',nq:'물이 얼지 않는다'},
+ {p:'회원이다',np:'회원이 아니다',q:'할인을 받는다',nq:'할인을 받지 못한다'},
+ {p:'불을 켠다',np:'불을 켜지 않는다',q:'방이 밝아진다',nq:'방이 밝아지지 않는다'},
+ {p:'운동을 꾸준히 한다',np:'운동을 꾸준히 하지 않는다',q:'건강해진다',nq:'건강해지지 않는다'},
+ {p:'예약을 한다',np:'예약을 하지 않는다',q:'자리에 앉을 수 있다',nq:'자리에 앉을 수 없다'},
+ {p:'비밀번호를 안다',np:'비밀번호를 모른다',q:'문을 열 수 있다',nq:'문을 열 수 없다'}
+];
+function genContra(){const it=CONTRA[Math.floor(Math.random()*CONTRA.length)];const correct='「'+it.nq+' → '+it.np+'」';const opts=shuf([correct,'「'+it.q+' → '+it.p+'」','「'+it.np+' → '+it.nq+'」','「'+it.p+' → '+it.q+'」']);return {q:'「'+it.p+' → '+it.q+'」',ask:'이 명제의 대우로 옳은 것은?',opts:opts,correctIdx:opts.indexOf(correct),exp:'대우는 <b>가정·결론을 모두 부정하고 자리를 바꾼다</b>: ¬Q → ¬P. 원명제가 참이면 대우도 반드시 참(역·이는 보장 안 됨).'};}
+const SYLLOG=[
+ {a:'포유류다',na:'포유류가 아니다',b:'척추동물이다',c:'동물이다',nc:'동물이 아니다'},
+ {a:'정사각형이다',na:'정사각형이 아니다',b:'직사각형이다',c:'평행사변형이다',nc:'평행사변형이 아니다'},
+ {a:'국가대표다',na:'국가대표가 아니다',b:'프로선수다',c:'운동선수다',nc:'운동선수가 아니다'},
+ {a:'장미다',na:'장미가 아니다',b:'꽃이다',c:'식물이다',nc:'식물이 아니다'},
+ {a:'교사다',na:'교사가 아니다',b:'공무원이다',c:'근로자다',nc:'근로자가 아니다'},
+ {a:'참치다',na:'참치가 아니다',b:'물고기다',c:'물에서 산다',nc:'물에서 살지 않는다'}
+];
+function genSyllog(){const it=SYLLOG[Math.floor(Math.random()*SYLLOG.length)];const correct='「'+it.a+' → '+it.c+'」';const opts=shuf([correct,'「'+it.c+' → '+it.a+'」','「'+it.na+' → '+it.nc+'」','「'+it.b+' → '+it.a+'」']);return {q:'「'+it.a+' → '+it.b+'」 그리고 「'+it.b+' → '+it.c+'」',ask:'두 전제에서 반드시 참인 결론은?',opts:opts,correctIdx:opts.indexOf(correct),exp:'삼단논법: A→B, B→C이므로 <b>A→C</b>. 역(C→A)·이(¬A→¬C)는 참이 보장되지 않는다.'};}
+const PS_MODES=['fallacy','contra','syllog'];
+const PS_NAME={fallacy:'논리적 오류',contra:'명제·대우',syllog:'삼단논법'};
+const PS_LIMIT={'하':70,'중':60,'상':45};
+const PS_GENS={fallacy:genFallacy,contra:genContra,syllog:genSyllog};
+const TEXT_GENS=Object.assign({},COMM_GENS,PS_GENS);
+function isPS(m){return PS_MODES.includes(m);}
+function isText(m){return Object.prototype.hasOwnProperty.call(TEXT_GENS,m);}
+function domScreen(m){return isComm(m)?'comm':isPS(m)?'ps':'setup';}
+let psCursor=0;
+function updatePS(){$('#psList').querySelectorAll('.mode').forEach((x,i)=>x.classList.toggle('on',i===psCursor));}
+function movePS(d){psCursor=(psCursor+d+PS_MODES.length)%PS_MODES.length;updatePS();}
+function selPS(){start(PS_MODES[psCursor]);}
+
 /* ===== 세션 ===== */
 let curDiff='중',S=null;
 $('#diffOpts').addEventListener('click',e=>{const b=e.target.closest('.opt');if(!b)return;
   $('#diffOpts').querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');curDiff=b.dataset.v;});
 function setDiff(i){const btns=$('#diffOpts').querySelectorAll('.opt');btns.forEach(x=>x.classList.remove('on'));btns[i].classList.add('on');curDiff=btns[i].dataset.v;}
-function show(id){['landing','setup','comm','quiz','result','flash','fresult'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));if(id==='setup'){$('#modeSel').classList.remove('hidden');$('#diffSel').classList.add('hidden');updateModeCursor();}if(id==='landing'){landCursor=0;updateLand();}if(id==='comm'){commCursor=0;updateComm();}}
+function show(id){['landing','setup','comm','ps','quiz','result','flash','fresult'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));if(id==='setup'){$('#modeSel').classList.remove('hidden');$('#diffSel').classList.add('hidden');updateModeCursor();}if(id==='landing'){landCursor=0;updateLand();}if(id==='comm'){commCursor=0;updateComm();}if(id==='ps'){psCursor=0;updatePS();}}
 let pendingMode='est',modeCursor=0;
 const MODE_LIST=['est','real','mul','flash','tips'],MODE_NAME={est:'기초 탄탄',real:'실전 문제',mul:'곱하기 마스터',flash:'분수 플래시카드'};
 function updateModeCursor(){$('#modeList').querySelectorAll('.mode').forEach((x,i)=>x.classList.toggle('on',i===modeCursor));}
@@ -817,7 +894,7 @@ function start(mode){
 }
 function load(){
   S.answered=false;S.over=false;S.timedOut=false;S.cursor=0;
-  const c=isComm(S.mode)?COMM_GENS[S.mode]():S.mode==='mul'?genMulMaster(S.diff):S.mode==='real'?REAL_GENS[Math.floor(Math.random()*REAL_GENS.length)](S.diff):GENS[Math.floor(Math.random()*GENS.length)](S.diff);
+  const c=isText(S.mode)?TEXT_GENS[S.mode]():S.mode==='mul'?genMulMaster(S.diff):S.mode==='real'?REAL_GENS[Math.floor(Math.random()*REAL_GENS.length)](S.diff):GENS[Math.floor(Math.random()*GENS.length)](S.diff);
   S.current=c;
   if(c.html){$('#qText').innerHTML=c.html;$('#qText').classList.add('hastable');}
   else{$('#qText').textContent=c.q;$('#qText').classList.remove('hastable');}
@@ -829,7 +906,7 @@ function load(){
     if(!S.sprint){$('#qFill').style.width='100%';$('#qFill').style.background='#3a3a45';}
   }else{
     $('#mulRow').classList.add('hidden');$('#choices').classList.remove('hidden');
-    $('#choices').classList.toggle('txt',isComm(S.mode));const box=$('#choices');box.innerHTML='';
+    $('#choices').classList.toggle('txt',isText(S.mode));const box=$('#choices');box.innerHTML='';
     c.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='choice';b.dataset.i=i;
       b.innerHTML=`<span class="n">${i+1}</span>${o}`;b.onclick=()=>pick(i);box.appendChild(b);});
     updateCursor();
@@ -897,7 +974,7 @@ function resumeGame(){
 }
 function quitToSetup(){
   if(S){S.running=false;S.paused=false;cancelAnimationFrame(S.raf);}
-  $('#pause').classList.add('hidden');show(isComm(S&&S.mode)?'comm':'setup');
+  $('#pause').classList.add('hidden');show(domScreen(S&&S.mode));
 }
 function updateCursor(){
   document.querySelectorAll('.choice').forEach(b=>b.classList.toggle('sel',+b.dataset.i===S.cursor));
@@ -948,14 +1025,14 @@ function reveal(picked){
     setTimeout(()=>{if(!(S&&S.running)||$('#quiz').classList.contains('hidden'))return;
       if(S.ok>=S.count)finish();else load();},110);return;
   }
-  if(c.exp){const _l=S.mode==='spell'?'국립국어원':S.mode==='hanja'?'한자 풀이':S.mode==='idiom'?'뜻풀이':'쓰임';$('#expNote').innerHTML=`<span class="tag">📖 ${_l}</span>${c.exp}`;$('#expNote').classList.remove('hidden');$('#nextBtn').classList.remove('hidden');S.awaitNext=true;}
+  if(c.exp){const LBL={spell:'국립국어원',hanja:'한자 풀이',idiom:'뜻풀이',proverb:'쓰임',fallacy:'논리적 오류',contra:'대우 규칙',syllog:'삼단논법'};const _l=LBL[S.mode]||'해설';$('#expNote').innerHTML=`<span class="tag">📖 ${_l}</span>${c.exp}`;$('#expNote').classList.remove('hidden');$('#nextBtn').classList.remove('hidden');S.awaitNext=true;}
   else setTimeout(()=>nextQ(),ok?450:1150);
 }
 function finish(){
   S.running=false;cancelAnimationFrame(S.raf);
   const done=S.ok+S.ng,acc=done?Math.round(S.ok/done*100):0;
   const avg=S.times.length?S.times.reduce((a,b)=>a+b,0)/S.times.length:0;
-  $('#rTitle').textContent=S.sprint?(S.dead?`⛔ 탈락 · ${S.ok}문제 생존`:`🏁 완주 성공! 100문제`):isComm(S.mode)?('의사소통 · '+COMM_NAME[S.mode]):`${S.mode==='real'?'실전 문제':S.mode==='mul'?'곱하기 마스터':'기초 탄탄'} · ${S.diff}`;
+  $('#rTitle').textContent=S.sprint?(S.dead?`⛔ 탈락 · ${S.ok}문제 생존`:`🏁 완주 성공! 100문제`):isPS(S.mode)?('문제해결 · '+PS_NAME[S.mode]):isComm(S.mode)?('의사소통 · '+COMM_NAME[S.mode]):`${S.mode==='real'?'실전 문제':S.mode==='mul'?'곱하기 마스터':'기초 탄탄'} · ${S.diff}`;
   $('#rAcc').textContent=acc+'%';$('#rAvg').textContent=avg.toFixed(1)+'s';
   $('#rTot').textContent=done;$('#rStreak').textContent=S.best;
   const wl=$('#wList');wl.innerHTML='';
@@ -1019,9 +1096,9 @@ $('#startBtn').onclick=startChosen;
 $('#domMath').onclick=()=>show('setup');
 $('#toLanding').onclick=()=>show('landing');
 $('#tipsClose').onclick=closeTips;
-$('#quitBtn').onclick=()=>{if(S){S.running=false;cancelAnimationFrame(S.raf);}if(S&&(S.ok+S.ng)>0)finish();else show(isComm(S&&S.mode)?'comm':'setup');};
+$('#quitBtn').onclick=()=>{if(S){S.running=false;cancelAnimationFrame(S.raf);}if(S&&(S.ok+S.ng)>0)finish();else show(domScreen(S&&S.mode));};
 $('#againBtn').onclick=()=>start(S&&S.mode?S.mode:'est');
-$('#homeBtn').onclick=()=>show(isComm(S&&S.mode)?'comm':'setup');
+$('#homeBtn').onclick=()=>show(domScreen(S&&S.mode));
 $('#resumeBtn').onclick=resumeGame;
 $('#phomeBtn').onclick=quitToSetup;
 $('#fOkBtn').onclick=()=>gradeCard(true);
@@ -1031,6 +1108,9 @@ $('#domComm').onclick=()=>show('comm');
 $('#nextBtn').onclick=()=>{if(S&&S.awaitNext){S.awaitNext=false;nextQ();}};
 $('#toLanding2').onclick=()=>show('landing');
 $('#commList').addEventListener('click',e=>{const b=e.target.closest('.mode');if(!b)return;const idx=[...$('#commList').children].indexOf(b);if(idx>=0){commCursor=idx;updateComm();}start(b.dataset.c);});
+$('#domPS').onclick=()=>show('ps');
+$('#toLanding3').onclick=()=>show('landing');
+$('#psList').addEventListener('click',e=>{const b=e.target.closest('.mode');if(!b)return;const idx=[...$('#psList').children].indexOf(b);if(idx>=0){psCursor=idx;updatePS();}start(b.dataset.c);});
 $('#fAgainBtn').onclick=()=>startFlash(lastFlashDiff);
 $('#fHomeBtn').onclick=()=>show('setup');
 document.addEventListener('keydown',e=>{
@@ -1054,6 +1134,13 @@ document.addEventListener('keydown',e=>{
     if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();moveComm(1);}
     else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();moveComm(-1);}
     else if(e.key==='Enter'||e.key===' '||e.code==='Space'){e.preventDefault();selComm();}
+    else if(e.key==='Escape'){e.preventDefault();show('landing');}
+    return;
+  }
+  if(!$('#ps').classList.contains('hidden')){
+    if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();movePS(1);}
+    else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();movePS(-1);}
+    else if(e.key==='Enter'||e.key===' '||e.code==='Space'){e.preventDefault();selPS();}
     else if(e.key==='Escape'){e.preventDefault();show('landing');}
     return;
   }
