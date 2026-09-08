@@ -40,6 +40,7 @@
   .qhead{position:sticky;top:0;z-index:5;background:var(--bg);margin-bottom:26px;padding-top:4px}
   .qhead .prog{margin-bottom:0}
   body:has(#quiz:not(.hidden)),body:has(#flash:not(.hidden)){align-items:flex-start}
+  body.typing{position:fixed;inset:0;overflow:hidden;align-items:flex-start}
   .q{font-size:34px;font-weight:800;text-align:center;white-space:pre-line;line-height:1.25;
      letter-spacing:-.5px;min-height:110px;display:flex;align-items:center;justify-content:center}
   .ask{text-align:center;font-size:13px;color:#6b7280;margin-top:2px;font-weight:600}
@@ -1072,7 +1073,7 @@ let curDiff='중',S=null;
 $('#diffOpts').addEventListener('click',e=>{const b=e.target.closest('.opt');if(!b)return;
   $('#diffOpts').querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');curDiff=b.dataset.v;});
 function setDiff(i){const btns=$('#diffOpts').querySelectorAll('.opt');btns.forEach(x=>x.classList.remove('on'));btns[i].classList.add('on');curDiff=btns[i].dataset.v;}
-function show(id){['landing','setup','comm','ps','info','res','org','quiz','result','flash','fresult'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));if(id==='setup'){$('#modeSel').classList.remove('hidden');$('#diffSel').classList.add('hidden');$('#typeSel').classList.add('hidden');updateModeCursor();}if(id==='landing'){landCursor=0;updateLand();}if(id==='comm'){commCursor=0;updateComm();}if(id==='ps'){psCursor=0;updatePS();}if(id==='info'){infoCursor=0;updInfo();}if(id==='res'){resCursor=0;updRes();}if(id==='org'){orgCursor=0;updOrg();}}
+function show(id){document.body.classList.remove('typing');['landing','setup','comm','ps','info','res','org','quiz','result','flash','fresult'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));if(id==='setup'){$('#modeSel').classList.remove('hidden');$('#diffSel').classList.add('hidden');$('#typeSel').classList.add('hidden');updateModeCursor();}if(id==='landing'){landCursor=0;updateLand();}if(id==='comm'){commCursor=0;updateComm();}if(id==='ps'){psCursor=0;updatePS();}if(id==='info'){infoCursor=0;updInfo();}if(id==='res'){resCursor=0;updRes();}if(id==='org'){orgCursor=0;updOrg();}}
 let pendingMode='mul',modeCursor=0;
 const MODE_LIST=['mul','real','types'],MODE_NAME={mul:'기초 탄탄',real:'실전 감각',data:'자료해석·계산',conc:'농도(소금물)',speed:'거리·속력·시간',work:'일의 양',combo:'경우의 수·확률',profit:'원가·이익',avg:'평균',ratio:'비율·비례'};
 const MATH_GENS={conc:genConc,speed:genSpeed,work:genWork,combo:genCombo,profit:genProfit,avg:genAvg,ratio:genRatio,data:d=>choice([genTable,genPayroll,genMulCmp,genRank,genSum])(d)};
@@ -1108,11 +1109,11 @@ function load(){
   $('#qAsk').classList.toggle('big',S.mode==='real'||isMath(S.mode));
   $('#qAsk').textContent=c.ask;$('#fb').textContent='';$('#fb').className='fb';$('#expNote').classList.add('hidden');$('#expNote').innerHTML='';$('#nextBtn').classList.add('hidden');S.awaitNext=false;
   if(c.typed){
-    $('#choices').classList.add('hidden');$('#mulRow').classList.remove('hidden');
+    $('#choices').classList.add('hidden');$('#mulRow').classList.remove('hidden');document.body.classList.add('typing');
     const inp=$('#mulInput');inp.value='';inp.disabled=false;inp.focus();
     if(!S.sprint){$('#qFill').style.width='100%';$('#qFill').style.background='#3a3a45';}
   }else{
-    $('#mulRow').classList.add('hidden');$('#choices').classList.remove('hidden');
+    $('#mulRow').classList.add('hidden');$('#choices').classList.remove('hidden');document.body.classList.remove('typing');
     $('#choices').classList.toggle('txt',isText(S.mode));const box=$('#choices');box.innerHTML='';
     c.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='choice';b.dataset.i=i;
       b.innerHTML=`<span class="n">${i+1}</span>${o}`;b.onclick=()=>pick(i);box.appendChild(b);});
