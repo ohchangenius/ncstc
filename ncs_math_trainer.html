@@ -1161,7 +1161,7 @@ function submitTyped(){
   reveal(isNaN(val)?null:val);
 }
 $('#mulInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submitTyped();}});
-$('#mulSubmit').onclick=submitTyped;
+$('#mulSubmit').addEventListener('pointerdown',e=>{e.preventDefault();submitTyped();});
 function pauseGame(){
   if(!S||!S.running||S.paused||S.answered)return;
   S.paused=true;cancelAnimationFrame(S.raf);
@@ -1205,7 +1205,7 @@ function reveal(picked){
   if(c.typed){
     ok=(picked!==null&&Math.abs(picked-c.a)<1e-6);
     yourT=(picked===null)?'(무응답)':fmt(picked);ansT=fmt(c.a);
-    S.times.push(rt);$('#mulInput').disabled=true;
+    S.times.push(rt);
   }else{
     timeout=picked<0;if(!timeout)S.times.push(rt);
     ok=picked===c.correctIdx;
