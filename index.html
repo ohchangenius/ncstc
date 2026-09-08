@@ -41,6 +41,10 @@
   .qhead .prog{margin-bottom:0}
   body:has(#quiz:not(.hidden)),body:has(#flash:not(.hidden)){align-items:flex-start}
   body.typing{position:fixed;inset:0;overflow:hidden;align-items:flex-start}
+  .mtimer{margin:0 0 10px}
+  .mtimer #mSec{display:block;font-size:14px;font-weight:800;color:var(--gold);margin-bottom:5px;text-align:center}
+  .mtimer .mbar{height:10px;background:#2a2a33;border-radius:999px;overflow:hidden}
+  .mtimer #mFill{display:block;height:100%;width:100%;background:#16a34a}
   .q{font-size:34px;font-weight:800;text-align:center;white-space:pre-line;line-height:1.25;
      letter-spacing:-.5px;min-height:110px;display:flex;align-items:center;justify-content:center}
   .ask{text-align:center;font-size:13px;color:#6b7280;margin-top:2px;font-weight:600}
@@ -319,6 +323,7 @@
     <div class="q" id="qText">…</div>
     <div class="ask" id="qAsk"></div>
     <div class="choices" id="choices"></div>
+    <div id="mTimer" class="mtimer hidden"><span id="mSec"></span><div class="mbar"><i id="mFill"></i></div></div>
     <div id="mulRow" class="hidden"><input id="mulInput" inputmode="decimal" autocomplete="off" placeholder="정답 입력"><button id="mulSubmit">제출</button></div>
     <div class="fb" id="fb"></div>
     <div id="expNote" class="hidden"></div>
@@ -1111,9 +1116,9 @@ function load(){
   if(c.typed){
     $('#choices').classList.add('hidden');$('#mulRow').classList.remove('hidden');document.body.classList.add('typing');
     const inp=$('#mulInput');inp.value='';inp.disabled=false;inp.focus();
-    if(!S.sprint){$('#qFill').style.width='100%';$('#qFill').style.background='#3a3a45';}
+    if(!S.sprint){$('#qFill').style.width='100%';$('#qFill').style.background='#3a3a45';$('#mTimer').classList.add('hidden');}else{$('#mTimer').classList.remove('hidden');$('#mFill').style.width='100%';$('#mFill').style.background='#16a34a';$('#mSec').textContent='⏱ '+(SPRINT_Q_LIMIT/1000).toFixed(1)+'초';}
   }else{
-    $('#mulRow').classList.add('hidden');$('#choices').classList.remove('hidden');document.body.classList.remove('typing');
+    $('#mulRow').classList.add('hidden');$('#choices').classList.remove('hidden');document.body.classList.remove('typing');$('#mTimer').classList.add('hidden');
     $('#choices').classList.toggle('txt',isText(S.mode));const box=$('#choices');box.innerHTML='';
     c.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='choice';b.dataset.i=i;
       b.innerHTML=`<span class="n">${i+1}</span>${o}`;b.onclick=()=>pick(i);box.appendChild(b);});
@@ -1144,7 +1149,7 @@ function startSprintQ(ms){
   const step=()=>{
     if(!S||!S.running||S.paused||S.answered)return;
     const rem=S.deadline-performance.now(),pct=Math.max(0,rem/S.limit*100);
-    $('#qFill').style.width=pct+'%';$('#qFill').style.background=pct<40?'#dc2626':'#16a34a';
+    $('#qFill').style.width=pct+'%';$('#qFill').style.background=pct<40?'#dc2626':'#16a34a';$('#mFill').style.width=pct+'%';$('#mFill').style.background=pct<40?'#dc2626':'#16a34a';$('#mSec').textContent='⏱ '+Math.max(0,rem/1000).toFixed(1)+'초';
     if(rem<=0){S.timedOut=true;reveal(null);return;}
     S.raf=requestAnimationFrame(step);
   };
