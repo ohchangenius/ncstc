@@ -1391,6 +1391,17 @@ document.addEventListener('keydown',e=>{
   }
   if(!$('#result').classList.contains('hidden')&&(e.key===' '||e.code==='Space')){e.preventDefault();start(S&&S.mode?S.mode:'real');}
 });
+/* ===== 브라우저 뒤로가기 → 앱 내부 뒤로 ===== */
+function curScreenId(){for(const id of ['quiz','result','fresult','flash','comm','ps','info','res','org','setup']){if(!$('#'+id).classList.contains('hidden'))return id;}return 'landing';}
+function doAppBack(){const cur=curScreenId();
+  if(cur==='quiz'){if(S){S.running=false;cancelAnimationFrame(S.raf);}show(domScreen(S&&S.mode));}
+  else if(cur==='result'||cur==='fresult'){show(domScreen(S&&S.mode));}
+  else if(cur==='flash'){show('setup');}
+  else if(cur==='setup'){if(!$('#diffSel').classList.contains('hidden')){$('#diffSel').classList.add('hidden');$('#modeSel').classList.remove('hidden');updateModeCursor();}else if(!$('#typeSel').classList.contains('hidden')){$('#typeSel').classList.add('hidden');$('#modeSel').classList.remove('hidden');updateModeCursor();}else show('landing');}
+  else if(cur!=='landing'){show('landing');}
+}
+try{history.pushState({t:1},'');}catch(e){}
+window.addEventListener('popstate',()=>{doAppBack();try{history.pushState({t:1},'');}catch(e){}});
 </script>
 </body>
 </html>
