@@ -212,7 +212,7 @@
       <div class="label">모드 선택</div>
       <div class="modelist" id="modeList">
         <button class="mode on" data-m="mul">기초 탄탄<span class="sm">곱셈 · 계산 근력</span></button>
-        <button class="mode" data-m="real">실전 감각<span class="sm">전 유형 랜덤 · 실전처럼</span></button>
+        <button class="mode" data-m="real">실전 감각<span class="sm">행과연형 · 자료해석 중심 · 상</span></button>
         <button class="mode" data-m="types">유형별 학습<span class="sm">농도·거속시·경우의 수 …</span></button>
       </div>
     </div>
@@ -688,7 +688,7 @@ function genPayroll(diff){
   const html=`<div class="dttl">사원별 연간지급액</div><table class="dtable">${head}${body}</table>${note}`;
   return {q:ask,ask,html,opts,correctIdx};
 }
-const REAL_GENS=[genTable,genTable,genTable,genPayroll,genPayroll,genMulCmp,genRank,genSum,genConc,genConc,genWork,genWork,genSpeed,genSpeed,genProfit,genProfit,genCombo,genAvg,genRatio];
+const REAL_GENS=[genTable,genTable,genTable,genTable,genPayroll,genPayroll,genPayroll,genMulCmp,genMulCmp,genRank,genSum,genConc,genSpeed,genWork,genProfit,genCombo,genRatio,genAvg];
 /* ===== 의사소통 능력 (원본 데이터셋 · 무작위 출제) ===== */
 const COMM_MODES=['proverb','idiom','hanja','spell','syn','idiomfit'];
 const COMM_NAME={proverb:'속담',idiom:'사자성어',hanja:'한자어 표기',spell:'맞춤법',syn:'어휘 대체',idiomfit:'혼동 성어'};
@@ -1056,7 +1056,7 @@ function landItems(){return [...document.querySelectorAll('#landing .domain:not(
 function updateLand(){landItems().forEach((b,i)=>b.classList.toggle('on',i===landCursor));}
 function moveLand(d){const it=landItems();if(!it.length)return;landCursor=(landCursor+d+it.length)%it.length;updateLand();}
 function selLand(){const it=landItems();if(it[landCursor])it[landCursor].click();}
-function chooseMode(m){if(m==='types'){$('#modeSel').classList.add('hidden');$('#typeSel').classList.remove('hidden');typeCursor=0;updateTypeCursor();return;}if(isMath(m)){curDiff='중';start(m);return;}pendingMode=m;$('#modeSel').classList.add('hidden');$('#typeSel').classList.add('hidden');$('#diffSel').classList.remove('hidden');const sp=$('#specialOpt');if(m==='mul'){sp.classList.remove('hidden');}else{sp.classList.add('hidden');if(curDiff==='스페셜')setDiff(1);}$('#diffTitle').textContent=m==='mul'?'기초 탄탄 · 자릿수 (하1·중2·상3자리 / 스페셜 소수점)':MODE_NAME[m]+' · 난이도';}
+function chooseMode(m){if(m==='types'){$('#modeSel').classList.add('hidden');$('#typeSel').classList.remove('hidden');typeCursor=0;updateTypeCursor();return;}if(m==='real'){curDiff='상';start('real');return;}if(isMath(m)){curDiff='중';start(m);return;}pendingMode=m;$('#modeSel').classList.add('hidden');$('#typeSel').classList.add('hidden');$('#diffSel').classList.remove('hidden');const sp=$('#specialOpt');if(m==='mul'){sp.classList.remove('hidden');}else{sp.classList.add('hidden');if(curDiff==='스페셜')setDiff(1);}$('#diffTitle').textContent=m==='mul'?'기초 탄탄 · 자릿수 (하1·중2·상3자리 / 스페셜 소수점)':MODE_NAME[m]+' · 난이도';}
 function startChosen(){if(pendingMode==='flash')startFlash(curDiff);else start(pendingMode);}
 
 function start(mode){
