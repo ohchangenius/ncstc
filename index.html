@@ -278,8 +278,8 @@
     <div class="subhead"><button class="lbtn" id="toLanding4" aria-label="뒤로"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="subttl">정보 능력</div></div>
     <div class="label">유형 선택</div>
     <div class="modelist" id="infoList">
-      <button class="mode on" data-c="radix">진법 변환<span class="sm">2·8·16진수 ↔ 10진수</span></button>
-      <button class="mode" data-c="excel">엑셀 함수<span class="sm">SUM·IF·COUNTIF·RANK …</span></button>
+      <button class="mode on" data-c="excel">엑셀 함수<span class="sm">SUM·IF·VLOOKUP·절대참조 …</span></button>
+      <button class="mode" data-c="comp">컴퓨터 활용<span class="sm">단축키·확장자·정보보안·용어</span></button>
     </div>
   </div>
 
@@ -951,11 +951,7 @@ const PS_NAME={fallacy:'논리적 오류',contra:'명제·대우',syllog:'삼단
 const PS_LIMIT={'하':70,'중':60,'상':45};
 const PS_GENS={fallacy:genFallacy,contra:genContra,syllog:genSyllog};
 /* ===== 정보능력 ===== */
-const BASE_NAME={2:'2진수',8:'8진수',16:'16진수'};
-function genRadix(){const b=choice([2,8,16]);const n=randInt(b===2?8:20,b===2?60:250);
-  if(Math.random()<0.5){const cor=n.toString(b).toUpperCase();const c=new Set([cor]);let g=0;while(c.size<4&&g++<60){const d=n+choice([-3,-2,-1,1,2,3]);if(d>0)c.add(d.toString(b).toUpperCase());}const opts=shuf([...c]);return {q:`10진수 ${n}`,ask:`${BASE_NAME[b]}로 변환하면?`,opts,correctIdx:opts.indexOf(cor),exp:`${n} → ${BASE_NAME[b]} <b>${cor}</b>. (${b}로 계속 나눈 나머지를 아래에서 위로 읽음)`};}
-  const s=n.toString(b).toUpperCase();const cor=String(n);const c=new Set([cor]);let g=0;while(c.size<4&&g++<60){const d=n+choice([-3,-2,-1,1,2,3]);if(d>0)c.add(String(d));}const opts=shuf([...c]);return {q:`${BASE_NAME[b]} ${s}`,ask:'10진수로 변환하면?',opts,correctIdx:opts.indexOf(cor),exp:`${BASE_NAME[b]} ${s} = 10진수 <b>${n}</b>. (각 자리에 ${b}의 거듭제곱 가중치를 곱해 합산)`};}
-function genExcel(){const t=choice(['sum','avg','max','min','countif','round','mod','if','left','rank']);
+function genExcel(){const t=choice(['sum','avg','max','min','countif','round','mod','if','left','rank','ref','vlookup']);
   if(t==='sum'){const a=Array.from({length:5},()=>randInt(2,40));const v=a.reduce((x,y)=>x+y,0);const o=numOpts(v,0,'');return {q:`A1:A5 = ${a.join(', ')}`,ask:'=SUM(A1:A5) 의 값은?',opts:o.opts,correctIdx:o.correctIdx,exp:`SUM=합계 → ${a.join('+')} = <b>${v}</b>.`};}
   if(t==='avg'){const a=Array.from({length:4},()=>randInt(60,100));const sum=a.reduce((x,y)=>x+y,0);const v=roundTo(sum/4,1);const o=numOpts(v,1,'');return {q:`A1:A4 = ${a.join(', ')}`,ask:'=AVERAGE(A1:A4) 의 값은?',opts:o.opts,correctIdx:o.correctIdx,exp:`AVERAGE=평균 → 합 ${sum} ÷ 4 = <b>${v}</b>.`};}
   if(t==='max'){const a=Array.from({length:5},()=>randInt(10,99));const v=Math.max(...a);const o=numOpts(v,0,'');return {q:`A1:A5 = ${a.join(', ')}`,ask:'=MAX(A1:A5) 의 값은?',opts:o.opts,correctIdx:o.correctIdx,exp:`MAX=최댓값 → <b>${v}</b>.`};}
@@ -965,8 +961,36 @@ function genExcel(){const t=choice(['sum','avg','max','min','countif','round','m
   if(t==='mod'){const a=randInt(20,99),b=randInt(3,9),v=a%b;const o=numOpts(v,0,'');return {q:`=MOD(${a}, ${b})`,ask:'결과 값은?',opts:o.opts,correctIdx:o.correctIdx,exp:`MOD=나머지 → ${a}÷${b}의 나머지 = <b>${v}</b>.`};}
   if(t==='if'){const v=randInt(40,100),k=choice([60,70,80]);const cor=v>=k?'통과':'재시험';const opts=['통과','재시험'];return {q:`A1 = ${v}`,ask:`=IF(A1>=${k},"통과","재시험") 의 결과는?`,opts,correctIdx:opts.indexOf(cor),exp:`IF=조건 판별 → ${v} ${v>=k?'≥':'<'} ${k} 이므로 <b>${cor}</b>.`};}
   if(t==='left'){const src=choice(['KOR2024','ICN0417','A1B2C3D4','SEOUL777','GATE12A']);const n=randInt(2,4);const cor=src.slice(0,n);const set=new Set([cor,src.slice(0,n+1),src.slice(-n),src.slice(1,1+n)]);const opts=shuf([...set]).slice(0,4);if(!opts.includes(cor))opts[0]=cor;return {q:`A1 = "${src}"`,ask:`=LEFT(A1, ${n}) 의 결과는?`,opts,correctIdx:opts.indexOf(cor),exp:`LEFT=왼쪽에서 ${n}글자 → <b>${cor}</b>.`};}
+  if(t==='ref'){const opts=shuf(['=B2/$B$6','=B2/B6','=$B$2/B6','=B6/$B$2']);return {q:'총합 [B6]에 대한 [B2]의 비율을 [C2]에 구해 아래로 채우기한다.',ask:'[C2]에 알맞은 수식은?',opts,correctIdx:opts.indexOf('=B2/$B$6'),exp:'총합 B6는 고정돼야 하므로 <b>절대참조 =B2/$B$6</b>. (채우기해도 $B$6는 안 변함, B2는 상대참조로 바뀜)'};}
+  if(t==='vlookup'){const opts=shuf(['정확히 일치하는 값만 찾는다','가장 비슷한 값을 찾는다','3번째 행을 가져온다','자동으로 정렬한다']);return {q:'=VLOOKUP(찾을값, 표범위, 3, 0)',ask:'마지막 인수 0(FALSE)의 의미는?',opts,correctIdx:opts.indexOf('정확히 일치하는 값만 찾는다'),exp:'VLOOKUP 4번째 인수 <b>0(FALSE)=정확히 일치</b>, 1(TRUE)=근사값. 세 번째 인수 3은 가져올 열 번호.'};}
   const a=Array.from({length:5},()=>randInt(50,99));const x=a[randInt(0,4)];const v=a.filter(y=>y>x).length+1;const o=numOpts(v,0,'등');return {q:`A1:A5 = ${a.join(', ')}`,ask:`=RANK(${x}, A1:A5, 0) 의 값은?`,opts:o.opts,correctIdx:o.correctIdx,exp:`RANK(…,0)=내림차순 순위 → ${x}보다 큰 값이 ${v-1}개이므로 <b>${v}등</b>.`};}
-const INFO_MODES=['radix','excel'],INFO_NAME={radix:'진법 변환',excel:'엑셀 함수'},INFO_GENS={radix:genRadix,excel:genExcel};
+const COMP=[
+ {q:'복사하기 단축키는?',a:'Ctrl+C',d:['Ctrl+V','Ctrl+X','Ctrl+Z'],x:'복사=Ctrl+C, 붙여넣기=Ctrl+V, 잘라내기=Ctrl+X.'},
+ {q:'붙여넣기 단축키는?',a:'Ctrl+V',d:['Ctrl+C','Ctrl+B','Ctrl+P'],x:'붙여넣기=Ctrl+V.'},
+ {q:'실행 취소(되돌리기) 단축키는?',a:'Ctrl+Z',d:['Ctrl+Y','Ctrl+X','Ctrl+R'],x:'실행 취소=Ctrl+Z, 다시 실행=Ctrl+Y.'},
+ {q:'저장하기 단축키는?',a:'Ctrl+S',d:['Ctrl+A','Ctrl+D','Ctrl+W'],x:'저장=Ctrl+S.'},
+ {q:'찾기 단축키는?',a:'Ctrl+F',d:['Ctrl+H','Ctrl+G','Ctrl+E'],x:'찾기=Ctrl+F, 바꾸기=Ctrl+H.'},
+ {q:'모두 선택 단축키는?',a:'Ctrl+A',d:['Ctrl+S','Ctrl+O','Ctrl+N'],x:'전체 선택=Ctrl+A.'},
+ {q:'인쇄 단축키는?',a:'Ctrl+P',d:['Ctrl+I','Ctrl+K','Ctrl+U'],x:'인쇄=Ctrl+P.'},
+ {q:'현재 프로그램(창) 종료 단축키는?',a:'Alt+F4',d:['Ctrl+F4','Alt+Tab','Ctrl+W'],x:'프로그램 종료=Alt+F4. (Alt+Tab=창 전환)'},
+ {q:'열린 창을 전환하는 단축키는?',a:'Alt+Tab',d:['Alt+F4','Ctrl+Tab','Win+D'],x:'창 전환=Alt+Tab.'},
+ {q:'작업 관리자를 바로 여는 단축키는?',a:'Ctrl+Shift+Esc',d:['Ctrl+Alt+Del','Alt+F4','Ctrl+Esc'],x:'작업 관리자=Ctrl+Shift+Esc.'},
+ {q:'엑셀에서 셀 내용 편집(수정) 단축키는?',a:'F2',d:['F4','F5','F12'],x:'셀 편집=F2. (F4=참조 전환, F12=다른 이름으로 저장)'},
+ {q:'화면 새로 고침 단축키는?',a:'F5',d:['F2','F1','F3'],x:'새로 고침=F5. (F1=도움말)'},
+ {q:'엑셀 통합 문서의 기본 확장자는?',a:'.xlsx',d:['.docx','.pptx','.hwp'],x:'엑셀=.xlsx, 워드=.docx, PPT=.pptx, 한글=.hwp.'},
+ {q:'파워포인트 파일의 확장자는?',a:'.pptx',d:['.xlsx','.pdf','.txt'],x:'파워포인트=.pptx.'},
+ {q:'압축 파일 형식은?',a:'.zip',d:['.exe','.csv','.log'],x:'압축=.zip/.rar. (.exe=실행 파일)'},
+ {q:'쉼표로 값을 구분해 저장하는(엑셀 호환) 파일 형식은?',a:'.csv',d:['.txt','.hwp','.bmp'],x:'CSV=쉼표로 구분된 값. 엑셀에서 열림.'},
+ {q:'정상 사이트로 위장해 개인정보를 빼내는 수법은?',a:'피싱',d:['스팸','캐시','쿠키'],x:'피싱(phishing)=위장 사이트·메일로 정보 탈취.'},
+ {q:'파일을 암호화하고 금전을 요구하는 악성코드는?',a:'랜섬웨어',d:['방화벽','스파이웨어','애드웨어'],x:'랜섬웨어=몸값(ransom)을 요구하는 악성코드.'},
+ {q:'외부의 비인가 접근을 차단하는 보안 시스템은?',a:'방화벽',d:['백신','캐시','쿠키'],x:'방화벽(Firewall)=네트워크 접근 통제.'},
+ {q:'웹 브라우저가 사이트 방문 정보를 저장하는 작은 파일은?',a:'쿠키',d:['캐시','드라이버','스풀'],x:'쿠키(Cookie)=사이트가 저장하는 작은 정보 파일.'},
+ {q:'전원이 꺼지면 내용이 지워지는 휘발성 주기억장치는?',a:'RAM',d:['ROM','HDD','SSD'],x:'RAM=휘발성 주기억장치, ROM=비휘발성.'},
+ {q:'인터넷상 웹 문서의 위치(주소)를 뜻하는 것은?',a:'URL',d:['HTML','HTTP','IP'],x:'URL=자원의 위치 주소.'},
+ {q:'데이터를 인터넷 서버에 저장·공유하는 기술은?',a:'클라우드',d:['오프라인','캐시','쿠키'],x:'클라우드=인터넷 기반 저장·공유.'}
+];
+function genComp(){const it=COMP[Math.floor(Math.random()*COMP.length)];const opts=shuf([it.a].concat(it.d));return {q:'「'+it.q+'」',ask:'알맞은 것을 고르세요',opts,correctIdx:opts.indexOf(it.a),exp:it.x};}
+const INFO_MODES=['excel','comp'],INFO_NAME={excel:'엑셀 함수',comp:'컴퓨터 활용'},INFO_GENS={excel:genExcel,comp:genComp};
 function isInfo(m){return INFO_MODES.includes(m);}
 let infoCursor=0;function updInfo(){$('#infoList').querySelectorAll('.mode').forEach((x,i)=>x.classList.toggle('on',i===infoCursor));}
 function movInfo(d){infoCursor=(infoCursor+d+INFO_MODES.length)%INFO_MODES.length;updInfo();}
@@ -1204,7 +1228,7 @@ function reveal(picked){
     setTimeout(()=>{if(!(S&&S.running)||$('#quiz').classList.contains('hidden'))return;
       if(S.ok>=S.count)finish();else load();},110);return;
   }
-  if(c.exp){const LBL={spell:'국립국어원',hanja:'한자 풀이',idiom:'뜻풀이',proverb:'쓰임',syn:'유의어',idiomfit:'성어 구별',fallacy:'논리적 오류',contra:'대우 규칙',syllog:'삼단논법',radix:'진법 변환',excel:'엑셀 함수',fx:'환율',cost:'비용 비교',orgcon:'조직 개념',etiq:'국제 매너'};const _l=LBL[S.mode]||'해설';$('#expNote').innerHTML=`<span class="tag">📖 ${_l}</span>${c.exp}`;$('#expNote').classList.remove('hidden');$('#nextBtn').classList.remove('hidden');S.awaitNext=true;}
+  if(c.exp){const LBL={spell:'국립국어원',hanja:'한자 풀이',idiom:'뜻풀이',proverb:'쓰임',syn:'유의어',idiomfit:'성어 구별',fallacy:'논리적 오류',contra:'대우 규칙',syllog:'삼단논법',excel:'엑셀 함수',comp:'컴퓨터 활용',fx:'환율',cost:'비용 비교',orgcon:'조직 개념',etiq:'국제 매너'};const _l=LBL[S.mode]||'해설';$('#expNote').innerHTML=`<span class="tag">📖 ${_l}</span>${c.exp}`;$('#expNote').classList.remove('hidden');$('#nextBtn').classList.remove('hidden');S.awaitNext=true;}
   else setTimeout(()=>nextQ(),ok?450:1150);
 }
 function finish(){
