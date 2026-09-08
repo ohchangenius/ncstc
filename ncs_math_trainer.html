@@ -161,6 +161,10 @@
   .choice.wrong{border-color:#f87171;background:#2a1618;color:#fca5a5}
   #mulInput{background:var(--surf);border-color:var(--bd);color:var(--tx)}
   #mulInput:focus{border-color:var(--gold)}
+  #mulRow{display:flex;gap:8px;align-items:stretch;margin-top:20px}
+  #mulInput{margin-top:0;flex:1;min-width:0}
+  #mulSubmit{border:0;border-radius:12px;font-size:18px;font-weight:800;padding:0 22px;cursor:pointer;background:var(--gold);color:var(--ink);white-space:nowrap}
+  #mulSubmit:active{filter:brightness(.95)}
   .quit{color:var(--mut)}
   .rbox{border-color:var(--bd);background:var(--surf)} .rbox b{color:var(--tx)} .rbox span{color:var(--mut)}
   .witem{border-color:var(--bd)}
@@ -309,7 +313,7 @@
     <div class="q" id="qText">…</div>
     <div class="ask" id="qAsk"></div>
     <div class="choices" id="choices"></div>
-    <div id="mulRow" class="hidden"><input id="mulInput" inputmode="decimal" autocomplete="off" placeholder="정답 입력 후 Enter"></div>
+    <div id="mulRow" class="hidden"><input id="mulInput" inputmode="decimal" autocomplete="off" placeholder="정답 입력"><button id="mulSubmit">제출</button></div>
     <div class="fb" id="fb"></div>
     <div id="expNote" class="hidden"></div>
     <button id="nextBtn" class="nextb hidden">다음 ▶</button>
@@ -1133,6 +1137,7 @@ function submitTyped(){
   reveal(isNaN(val)?null:val);
 }
 $('#mulInput').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submitTyped();}});
+$('#mulSubmit').onclick=submitTyped;
 function pauseGame(){
   if(!S||!S.running||S.paused||S.answered)return;
   S.paused=true;cancelAnimationFrame(S.raf);
